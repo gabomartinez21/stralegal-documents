@@ -1,3 +1,21 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+*, *::after, *::before{
+  box-sizing:inherit;
+}
+:root{
+  --color-principal: #1c739c;
+  --color-principal-oscuro: #054461;
+  --color-texto: #212529;
+  --font-title: 4rem;
+  --font-subtitle: 2rem;
+  --font-text:1rem;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,9 +23,51 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: 'Raleway', sans-serif;
+    font-size: var(--font-text);
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+a{
+  text-decoration:none;
+  display: block;
+}
+
+.adminContainer{
+  display:grid;
+  grid-template-columns:1fr 2fr;
+}
+
+aside.sidebar{
+  max-width:420px;
+  background:var(--color-principal);
+  color:#fff;
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+aside.sidebar h2{
+  font-size: 2rem;
+}
+.nav-sidebar{
+  margin-top: 3rem;
+}
+.nav-sidebar a{
+  padding:.5rem .3rem;
+  color:#fff;
+}
+.nav-sidebar li{
+  transition:all .4s ease;
+}
+.nav-sidebar li:hover{
+  background:var(--color-principal-oscuro);
+}
+.nav-sidebar li .MuiListItemIcon-root{
+  width:auto;
+}
+.nav-sidebar li svg{
+  fill:#fff;
+  font-size: 1.4rem;
 }
