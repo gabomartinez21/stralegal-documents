@@ -41,24 +41,110 @@ const useStyles = makeStyles((theme) => ({
         }
     },
 }));
-function Condicional() {
+function Condicional({setTextoDocumento, textoDocumento, index}) {
     const classes = useStyles();
-    const [moduleType, setModuleType] = useState('');
+    const [moduleType, setModuleType] = useState([]);
+    const [moduleType2, setModuleType2] = useState([]);
     const [expanded, setExpanded] = useState('panel1');
-    const [mostrar, setMostrar] = useState(false);
-    const [mostrar2, setMostrar2] = useState(false);
+
+    useEffect(()=>{
+        if(textoDocumento[index]){
+
+            const condicionalA = textoDocumento[index].condicion[0];
+    
+            if(moduleType[moduleType.length-1] === 'condicional'){
+                
+                setTextoDocumento([
+                    ...textoDocumento, 
+                    {
+                        ...condicionalA,
+                        condicion:[ 
+                            {
+                                tituloCond:""
+                            },
+                            {
+                                tituloCond:"",
+                            }    
+                        ]
+                    }
+                ])
+    
+            }
+            if(moduleType[moduleType.length-1] === 'texto'){
+                
+                setTextoDocumento([
+                    ...textoDocumento, 
+                    {
+                        ...condicionalA, 
+                        texto:''
+                    }
+                ])
+                console.log(textoDocumento[index].condicion[0])
+            }
+            if(moduleType[moduleType.length-1] === 'titulo'){
+                setTextoDocumento([
+                    ...textoDocumento, 
+                    {
+                        ...condicionalA,
+                        titulo:''
+                    }
+                ])
+            }
+        }
+
+    }, [moduleType])
+
+    useEffect(()=>{
+        console.log(textoDocumento[index])
+        // const condicionalB = textoDocumento[index].condicion[1];
+
+        // if(moduleType2[moduleType2.length-1] === 'condicional'){
+        //     setTextoDocumento([
+        //         ...textoDocumento, 
+        //         {
+        //             ...condicionalB,
+        //             condicion:[ 
+        //                 {
+        //                     tituloCond:""
+        //                 },
+        //                 {
+        //                     tituloCond:"",
+        //                 }    
+        //             ]
+        //         }
+        //     ])
+
+        // }
+        // if(moduleType2[moduleType2.length-1] === 'texto'){
+        //     const condicionAct = textoDocumento[index].condicion;
+        //     setTextoDocumento([
+        //         ...textoDocumento, 
+        //         {
+        //             ...condicionalB,
+        //             texto:''
+        //         }
+        //     ])
+        // }
+        // if(moduleType2[moduleType2.length-1] === 'titulo'){
+        //     setTextoDocumento([
+        //         ...textoDocumento, 
+        //         {
+        //             ...condicionalB,
+        //             titulo:''
+        //         }
+        //     ])
+        // }
+    }, [moduleType2])
 
     const handleChange = (panel) => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
     };
 
     const handleAgregar = e => {
-        setModuleType(e.target.value)
-        setMostrar(true)
+        setModuleType([...moduleType,e.target.value])
     }
     const handleAgregar2 = e => {
-        setModuleType(e.target.value)
-        setMostrar2(true)
+        setModuleType2([...moduleType2, e.target.value])
     }
 
     return (
@@ -82,15 +168,35 @@ function Condicional() {
 
                     </div>
                     <div className="condicionales">
-                        {mostrar && 
-                            <Condicional/>
-                        }
+                        {React.Children.toArray(
+                            moduleType.map((type, index) => {
+                                if(type === 'condicional'){
+                                    return  <Condicional 
+                                            setTextoDocumento={setTextoDocumento} 
+                                            textoDocumento={textoDocumento}
+                                        />
+                                }
+                                if(type === 'title'){
+                                    return <Titulo
+                                            setTextoDocumento={setTextoDocumento} 
+                                            textoDocumento={textoDocumento}
+                                            index={index}
+                                        />
+                                }
+                                if(type === 'texto'){
+                                    return <Texto
+                                            setTextoDocumento={setTextoDocumento} 
+                                            textoDocumento={textoDocumento}
+                                            index={index}
+                                        />
+                                }
+                            })
+                        )}
                     </div>
                     <FormGroup className={classes.boxInput}>
                         <FormControl className={classes.addCondition}>
                             <p>Agregar los elementos necesarios para el documento</p>
                             <Select
-                                label
                                 id="demo-simple-select"
                                 value={moduleType}
                                 onChange={handleAgregar}
@@ -124,9 +230,30 @@ function Condicional() {
 
                     </div>
                     <div className="condicionales">
-                        {mostrar2 && 
-                            <Condicional/>
-                        }
+                        {React.Children.toArray(
+                            moduleType2.map((type, index) => {
+                                if(type === 'condicional'){
+                                    return  <Condicional 
+                                            setTextoDocumento={setTextoDocumento} 
+                                            textoDocumento={textoDocumento}
+                                        />
+                                }
+                                if(type === 'title'){
+                                    return <Titulo
+                                            setTextoDocumento={setTextoDocumento} 
+                                            textoDocumento={textoDocumento}
+                                            index={index}
+                                        />
+                                }
+                                if(type === 'texto'){
+                                    return <Texto
+                                            setTextoDocumento={setTextoDocumento} 
+                                            textoDocumento={textoDocumento}
+                                            index={index}
+                                        />
+                                }
+                            })
+                        )}
                     </div>
                     <FormGroup className={classes.boxInput}>
                         <FormControl className={classes.addCondition}>

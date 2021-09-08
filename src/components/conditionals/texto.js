@@ -14,8 +14,15 @@ const useStyles = makeStyles((theme) => ({
         }
     },
 }));
-function Texto() {
+function Texto({setTextoDocumento, textoDocumento, index}) {
     const classes = useStyles();
+
+    const handleText = e=>{
+        const valores = [...textoDocumento];
+        valores[index][e.target.name] = e.target.value
+        setTextoDocumento(valores)
+    }
+
     return (
         <div>
             <FormGroup className={classes.boxInput}>
@@ -24,7 +31,9 @@ function Texto() {
                     id="textoBase"
                     variant="outlined"
                     rows={6}
+                    name="texto"
                     multiline
+                    onChange={handleText}
                 />
             </FormGroup>
         </div>

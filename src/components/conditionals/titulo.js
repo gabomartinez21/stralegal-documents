@@ -14,18 +14,25 @@ const useStyles = makeStyles((theme) => ({
         }
     },
 }));
-function Texto() {
+function Texto({setTextoDocumento, textoDocumento,index}) {
     const classes = useStyles();
+
+    const handleTitulo = e=>{
+        const valores = [...textoDocumento];
+        valores[index][e.target.name] = e.target.value
+        setTextoDocumento(valores)
+    }
     return (
         <div>
             <FormGroup className={classes.boxInput}>
                 <Typography variante="h3">Titulo</Typography>
                 <TextField 
-                    id="name"
+                    name="titulo"
                     type="text"
                     placeholder="Titulo"
                     variant="outlined"
                     className={classes.textInput}
+                    onChange={handleTitulo}
                 />
             </FormGroup>
         </div>

@@ -55,75 +55,95 @@ function CreateDocument() {
         setTextoDocumento([...textoDocumento, {texto:textoAgregado}])
     },[])
 
+    console.log(textoDocumento);
+
     useEffect(()=>{
         setMostrarCondicion(true);
         if(moduleType[moduleType.length-1] === 'condicional'){
             setTextoDocumento([...textoDocumento, {
                 condicion:[ 
                     {
-                        tituloCond:"Condicion A"
+                        tituloCond:""
                     },
                     {
-                        tituloCond:"Condicion B",
+                        tituloCond:"",
                     }
                 ]
             }])
 
         }
+        if(moduleType[moduleType.length-1] === 'texto'){
+            setTextoDocumento([...textoDocumento, {
+                texto:''
+            }])
+        }
+        if(moduleType[moduleType.length-1] === 'titulo'){
+            setTextoDocumento([...textoDocumento, {
+                titulo:''
+            }])
+        }
     }, [moduleType])
+
+    const handleTexto = e=>{
+        const valores = [...textoDocumento];
+        valores[0][e.target.name] = e.target.value
+        setTextoDocumento(valores)
+    }
 
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch({
-            type:DOCUMENT_ACTIONS.AGREGAR_TODO,
-            payload:{
-                titulo:titulo,
-                textoDocumento:[
-                    {
-                        texto:textoAgregado
-                    },  
-                    {
-                        condicion:[
-                            {
-                                tituloCond:"Condicion A",
-                                texto:'Prueba texto A',
-                                condicion:[
-                                    {
-                                        tituloCond:"Condicion A-C",
-                                        texto:'Prueba texto C'
-                                    },
-                                    {
-                                        tituloCond:"Condicion A-C2",
-                                        texto:'Prueba texto C'
-                                    }
-                                ]
-                            },
-                            {
-                                tituloCond:"Condicion B",
-                                texto:'Prueba texto B',
-                                condicion:[
-                                    {
-                                        tituloCond:"Condicion B - D",
-                                        texto:'Prueba texto D'
-                                    },
-                                    {
-                                        tituloCond:"Condicion B - D2",
-                                        texto:'Prueba texto D'
-                                    }
-                                ]
-                            },
-                        ]
-                    },
-                    {
-                        titulo:'Minuta'
-                    },
-                    {
-                        texto:'Para la minuta es necesario los requerimientos XXX3'
-                    }
-                ]
-            }
-        })
+        // dispatch({
+        //     type:DOCUMENT_ACTIONS.AGREGAR_TODO,
+        //     payload:{
+        //         titulo:titulo,
+        //         textoDocumento:[
+        //             {
+        //                 texto:textoAgregado
+        //             },  
+        //             {
+        //                 condicion:[
+        //                     {
+        //                         tituloCond:"Minuta",
+        // TODO AGREGAR ACLARACION
+        // TODO AGREGAR ACCIONISTAS MINUTA DE CONSTITUTCION  Y ESTATUTO 
+        // todo revisar que las prguntas sean obligatorias o no
+        //                         texto:'Prueba texto A',
+        //                         condicion:[
+        //                             {
+        //                                 tituloCond:"Condicion A-C",
+        //                                 texto:'Prueba texto C'
+        //                             },
+        //                             {
+        //                                 tituloCond:"Condicion A-C2",
+        //                                 texto:'Prueba texto C'
+        //                             }
+        //                         ]
+        //                     },
+        //                     {
+        //                         tituloCond:"Contrato",
+        //                         condicion:[
+        //                             {
+        //                                 tituloCond:"Condicion B - D",
+        //                                 texto:'Prueba texto D'
+        //                             },
+        //                             {
+        //                                 tituloCond:"Condicion B - D2",
+        //                                 texto:'Prueba texto D'
+        //                             }
+        //                         ]
+        //                     },
+        //                 ]
+        //             },
+        //             {
+        //                 titulo:'Minuta'
+        //             },
+        //             {
+        //                 texto:'Para la minuta es necesario los requerimientos XXX3'
+        //             }
+        //         ]
+        //     }
+        // })
         console.log(document)
     }
     return (
@@ -148,22 +168,35 @@ function CreateDocument() {
                             variant="outlined"
                             rows={6}
                             multiline
-                            onChange={e => setTextoAgregado(e.target.value)}
+                            name="texto"
+                            onChange={handleTexto}
                         />
                     </FormGroup>
 
                 </div>
                 <div className="condicionales">
                     {React.Children.toArray(
-                        moduleType.map(type => {
+                        moduleType.map((type, index) => {
                             if(type === 'condicional'){
-                                return <Condicional/>
+                                return  <Condicional 
+                                        setTextoDocumento={setTextoDocumento} 
+                                        textoDocumento={textoDocumento}
+                                        index={index}
+                                    />
                             }
                             if(type === 'title'){
-                                return <Titulo/>
+                                return <Titulo
+                                        setTextoDocumento={setTextoDocumento} 
+                                        textoDocumento={textoDocumento}
+                                        index={index}
+                                    />
                             }
                             if(type === 'texto'){
-                                return <Texto/>
+                                return <Texto
+                                        setTextoDocumento={setTextoDocumento} 
+                                        textoDocumento={textoDocumento}
+                                        index={index}
+                                    />
                             }
                         })
                     )}
