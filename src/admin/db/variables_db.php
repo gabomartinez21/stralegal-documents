@@ -19,7 +19,7 @@ class DB{
         try{
 
 
-            $connection = "mysql:host=".$this->host.";dbname=" . $this->db .
+            $connection = "mysql:host=".$this->host.";dbname=" . $this->db
         }
     }
     
