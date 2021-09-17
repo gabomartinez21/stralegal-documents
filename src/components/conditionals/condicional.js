@@ -41,239 +41,155 @@ const useStyles = makeStyles((theme) => ({
         }
     },
 }));
-function Condicional({setTextoDocumento, textoDocumento, index}) {
+function Condicional({setArreglo, arreglo, index}) {
     const classes = useStyles();
-    const [moduleType, setModuleType] = useState([]);
-    const [moduleType2, setModuleType2] = useState([]);
-    const [expanded, setExpanded] = useState('panel1');
+    const [moduleType, setModuleType] = useState([[],[]]);
+    const [expanded, setExpanded] = useState('panel0');
+    const [condicional, setCondicional] = useState([
+        [{
+            tituloCond:''
+        }],
+        [{
+            tituloCond:''
+        }],
+    ])
 
-    useEffect(()=>{
-        if(textoDocumento[index]){
-
-            const condicionalA = textoDocumento[index].condicion[0];
-    
-            if(moduleType[moduleType.length-1] === 'condicional'){
-                
-                setTextoDocumento([
-                    ...textoDocumento, 
-                    {
-                        ...condicionalA,
-                        condicion:[ 
-                            {
-                                tituloCond:""
-                            },
-                            {
-                                tituloCond:"",
-                            }    
-                        ]
-                    }
-                ])
+    useEffect(() => {
+        const copyTextoDocumento = [...arreglo];
+        if(index.length > 1){
+            if(copyTextoDocumento[index[0]]){
+                copyTextoDocumento[index[0]][index[1]].condicion = condicional
     
             }
-            if(moduleType[moduleType.length-1] === 'texto'){
-                
-                setTextoDocumento([
-                    ...textoDocumento, 
-                    {
-                        ...condicionalA, 
-                        texto:''
-                    }
-                ])
-                console.log(textoDocumento[index].condicion[0])
+            
+        }else{
+            if(copyTextoDocumento[index[0]]){
+                copyTextoDocumento[index[0]].condicion = condicional
+    
             }
-            if(moduleType[moduleType.length-1] === 'titulo'){
-                setTextoDocumento([
-                    ...textoDocumento, 
-                    {
-                        ...condicionalA,
-                        titulo:''
-                    }
-                ])
-            }
+
         }
+        setArreglo(copyTextoDocumento)
+    }, [condicional]);
 
-    }, [moduleType])
 
-    useEffect(()=>{
-        console.log(textoDocumento[index])
-        // const condicionalB = textoDocumento[index].condicion[1];
-
-        // if(moduleType2[moduleType2.length-1] === 'condicional'){
-        //     setTextoDocumento([
-        //         ...textoDocumento, 
-        //         {
-        //             ...condicionalB,
-        //             condicion:[ 
-        //                 {
-        //                     tituloCond:""
-        //                 },
-        //                 {
-        //                     tituloCond:"",
-        //                 }    
-        //             ]
-        //         }
-        //     ])
-
-        // }
-        // if(moduleType2[moduleType2.length-1] === 'texto'){
-        //     const condicionAct = textoDocumento[index].condicion;
-        //     setTextoDocumento([
-        //         ...textoDocumento, 
-        //         {
-        //             ...condicionalB,
-        //             texto:''
-        //         }
-        //     ])
-        // }
-        // if(moduleType2[moduleType2.length-1] === 'titulo'){
-        //     setTextoDocumento([
-        //         ...textoDocumento, 
-        //         {
-        //             ...condicionalB,
-        //             titulo:''
-        //         }
-        //     ])
-        // }
-    }, [moduleType2])
+    const handleAddModule = (pos, type) => {
+        let modulo;
+        switch(type){
+            case 'texto':
+                modulo = [...condicional[pos]]
+                modulo.push({texto:''});
+                const condicionTexto = [...condicional]
+                condicionTexto[pos]=modulo;
+                setCondicional(condicionTexto)
+                break;
+            case 'titulo':
+                modulo = [...condicional[pos]]
+                modulo.push({titulo:''});
+                const condicionTitulo = [...condicional]
+                condicionTitulo[pos]=modulo;
+                setCondicional(condicionTitulo)
+                break;
+            case 'condicional':
+                modulo = [...condicional[pos]]
+                modulo.push({condicion:[ 
+                    [{tituloCond:""}],
+                    [{tituloCond:""}]    
+                ]});
+                const condicionCondicion = [...condicional]
+                condicionCondicion[pos]=modulo;
+                setCondicional(condicionCondicion)
+                break;
+        }
+    }
 
     const handleChange = (panel) => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
     };
 
-    const handleAgregar = e => {
-        setModuleType([...moduleType,e.target.value])
+    const handleTitle = (e, modulo, ind) => {
+        modulo[0].tituloCond = e.target.value;
+        const condicionNueva = [...condicional]
+        condicionNueva[ind]=modulo;
+        setCondicional(condicionNueva)
     }
-    const handleAgregar2 = e => {
-        setModuleType2([...moduleType2, e.target.value])
+
+    const handleAgregar = (e, ind) => {
+        const moduleCopy = [...moduleType];
+        handleAddModule(ind, e.target.value);
+        moduleCopy[ind].push(e.target.value);
+        setModuleType(moduleCopy)
     }
 
     return (
         <div>
-            <Accordion className={classes.accordion} square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                    <Typography>Condicion A</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <div class="row">
-                        <FormGroup className={classes.boxInput}>
-                            <Typography variante="h3">Titulo Condición</Typography>
-                            <TextField 
-                                id="name"
-                                type="text"
-                                placeholder="Titulo"
-                                variant="outlined"
-                                className={classes.textInput}
-                            />
-                        </FormGroup>
+            {condicional.map((moduleCond, i) => (
+                <Accordion className={classes.accordion} square expanded={expanded === `panel${i}`} onChange={handleChange(`panel${i}`)}>
+                    <AccordionSummary aria-controls={`panel${i}d-content`} id={`panel${i}d-header`}>
+                        <Typography>Condicion {i+1}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <div class="row">
+                            <FormGroup className={classes.boxInput}>
+                                <Typography variante="h3">Titulo Condición</Typography>
+                                <TextField 
+                                    id="name"
+                                    type="text"
+                                    placeholder="Titulo"
+                                    value={moduleCond[0].tituloCond}
+                                    onChange={(e) => handleTitle(e, moduleCond, i)}
+                                    variant="outlined"
+                                    className={classes.textInput}
+                                />
+                            </FormGroup>
 
-                    </div>
-                    <div className="condicionales">
-                        {React.Children.toArray(
-                            moduleType.map((type, index) => {
-                                if(type === 'condicional'){
-                                    return  <Condicional 
-                                            setTextoDocumento={setTextoDocumento} 
-                                            textoDocumento={textoDocumento}
-                                        />
-                                }
-                                if(type === 'title'){
-                                    return <Titulo
-                                            setTextoDocumento={setTextoDocumento} 
-                                            textoDocumento={textoDocumento}
-                                            index={index}
-                                        />
-                                }
-                                if(type === 'texto'){
-                                    return <Texto
-                                            setTextoDocumento={setTextoDocumento} 
-                                            textoDocumento={textoDocumento}
-                                            index={index}
-                                        />
-                                }
-                            })
-                        )}
-                    </div>
-                    <FormGroup className={classes.boxInput}>
-                        <FormControl className={classes.addCondition}>
-                            <p>Agregar los elementos necesarios para el documento</p>
-                            <Select
-                                id="demo-simple-select"
-                                value={moduleType}
-                                onChange={handleAgregar}
-                            >
-                                <MenuItem value="" disabled>Agregar modulo</MenuItem>
-                                <MenuItem value="condicional">Condicional</MenuItem>
-                                <MenuItem value="texto">Texto</MenuItem>
-                                <MenuItem value="title">Titulo Documento</MenuItem>
-                                <MenuItem value="close">Cierre Condicional</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </FormGroup>
-                </AccordionDetails>
-            </Accordion>
-            <Accordion className={classes.accordion} square expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
-                <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                    <Typography>Condicion B</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <div class="row">
+                        </div>
+                        <div className="condicionales">
+                            {React.Children.toArray(
+                                moduleType[i].map((type, indexC) => {
+                                    if(type === 'condicional'){
+                                        return  <Condicional 
+                                                setArreglo={setCondicional} 
+                                                arreglo={condicional}
+                                                index={[i,indexC+1]}
+                                            />
+                                    }
+                                    if(type === 'titulo'){
+                                        return <Titulo
+                                                setArreglo={setCondicional} 
+                                                arreglo={condicional}
+                                                index={[i,indexC+1]}
+                                            />
+                                    }
+                                    if(type === 'texto'){
+                                        return <Texto
+                                                setArreglo={setCondicional} 
+                                                arreglo={condicional}
+                                                index={[i,indexC+1]}
+                                            />
+                                    }
+                                })
+                            )}
+                        </div>
                         <FormGroup className={classes.boxInput}>
-                            <Typography variante="h3">Titulo Condición</Typography>
-                            <TextField 
-                                id="name"
-                                type="text"
-                                placeholder="Titulo"
-                                variant="outlined"
-                                className={classes.textInput}
-                            />
+                            <FormControl className={classes.addCondition}>
+                                <p>Agregar los elementos necesarios para el documento</p>
+                                <Select
+                                    id="demo-simple-select"
+                                    onChange={(e) => handleAgregar(e, i)}
+                                >
+                                    <MenuItem value="" disabled>Agregar modulo</MenuItem>
+                                    <MenuItem value="condicional">Condicional</MenuItem>
+                                    <MenuItem value="texto">Texto</MenuItem>
+                                    <MenuItem value="titulo">Titulo Documento</MenuItem>
+                                    <MenuItem value="close">Cierre Condicional</MenuItem>
+                                </Select>
+                            </FormControl>
                         </FormGroup>
-
-                    </div>
-                    <div className="condicionales">
-                        {React.Children.toArray(
-                            moduleType2.map((type, index) => {
-                                if(type === 'condicional'){
-                                    return  <Condicional 
-                                            setTextoDocumento={setTextoDocumento} 
-                                            textoDocumento={textoDocumento}
-                                        />
-                                }
-                                if(type === 'title'){
-                                    return <Titulo
-                                            setTextoDocumento={setTextoDocumento} 
-                                            textoDocumento={textoDocumento}
-                                            index={index}
-                                        />
-                                }
-                                if(type === 'texto'){
-                                    return <Texto
-                                            setTextoDocumento={setTextoDocumento} 
-                                            textoDocumento={textoDocumento}
-                                            index={index}
-                                        />
-                                }
-                            })
-                        )}
-                    </div>
-                    <FormGroup className={classes.boxInput}>
-                        <FormControl className={classes.addCondition}>
-                            <p>Agregar los elementos necesarios para el documento</p>
-                            <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={moduleType}
-                            onChange={handleAgregar2}
-                            >
-                                <MenuItem value="" disabled>Agregar modulo</MenuItem>
-                                <MenuItem value="condicional">Condicional</MenuItem>
-                                <MenuItem value="texto">Texto</MenuItem>
-                                <MenuItem value="title">Titulo Documento</MenuItem>
-                                <MenuItem value="close">Cierre Condicional</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </FormGroup>
-                </AccordionDetails>
-            </Accordion>
+                    </AccordionDetails>
+                </Accordion>
+            ))}
+        
             
         </div>
     )

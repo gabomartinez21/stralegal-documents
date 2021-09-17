@@ -12,6 +12,8 @@ import {
 } from '@material-ui/core';
 import DocumentContext from '../context/DocumentContext';
 import {DOCUMENT_ACTIONS} from '../context/DocumentProvider';
+import axios from 'axios';
+import qs from 'qs';
 
 import Texto from './conditionals/texto'
 import Condicional from './conditionals/condicional'
@@ -55,19 +57,15 @@ function CreateDocument() {
         setTextoDocumento([...textoDocumento, {texto:textoAgregado}])
     },[])
 
-    console.log(textoDocumento);
+    // console.log(textoDocumento);
 
     useEffect(()=>{
         setMostrarCondicion(true);
         if(moduleType[moduleType.length-1] === 'condicional'){
             setTextoDocumento([...textoDocumento, {
                 condicion:[ 
-                    {
-                        tituloCond:""
-                    },
-                    {
-                        tituloCond:"",
-                    }
+                    [{tituloCond:""}],
+                    [{tituloCond:""}]
                 ]
             }])
 
@@ -90,62 +88,34 @@ function CreateDocument() {
         setTextoDocumento(valores)
     }
 
-
+    const enviarDatos = async (data) => {
+        const body = {
+            'titulo_doc':data.titulo,
+            'texto_doc':JSON.stringify(data.textoDocumento),
+            'type':'guardar'
+        }
+        const res = await axios.post('http://192.168.142.1/gabo/starlegal/admin/v1/documentos.php', {
+            data: JSON.stringify(body),
+        })
+        console.log(res)
+    }
     const handleSubmit = (e) => {
         e.preventDefault();
-        // dispatch({
-        //     type:DOCUMENT_ACTIONS.AGREGAR_TODO,
-        //     payload:{
-        //         titulo:titulo,
-        //         textoDocumento:[
-        //             {
-        //                 texto:textoAgregado
-        //             },  
-        //             {
-        //                 condicion:[
-        //                     {
-        //                         tituloCond:"Minuta",
-        // TODO AGREGAR ACLARACION
-        // TODO AGREGAR ACCIONISTAS MINUTA DE CONSTITUTCION  Y ESTATUTO 
-        // todo revisar que las prguntas sean obligatorias o no
-        //                         texto:'Prueba texto A',
-        //                         condicion:[
-        //                             {
-        //                                 tituloCond:"Condicion A-C",
-        //                                 texto:'Prueba texto C'
-        //                             },
-        //                             {
-        //                                 tituloCond:"Condicion A-C2",
-        //                                 texto:'Prueba texto C'
-        //                             }
-        //                         ]
-        //                     },
-        //                     {
-        //                         tituloCond:"Contrato",
-        //                         condicion:[
-        //                             {
-        //                                 tituloCond:"Condicion B - D",
-        //                                 texto:'Prueba texto D'
-        //                             },
-        //                             {
-        //                                 tituloCond:"Condicion B - D2",
-        //                                 texto:'Prueba texto D'
-        //                             }
-        //                         ]
-        //                     },
-        //                 ]
-        //             },
-        //             {
-        //                 titulo:'Minuta'
-        //             },
-        //             {
-        //                 texto:'Para la minuta es necesario los requerimientos XXX3'
-        //             }
-        //         ]
-        //     }
-        // })
-        console.log(document)
+        dispatch({
+            type:DOCUMENT_ACTIONS.AGREGAR_TODO,
+            payload:{
+                titulo,
+                textoDocumento
+            }
+        })
+
+        enviarDatos({
+            titulo,
+            textoDocumento
+        })
+        
     }
+    
     return (
         <div>
             <h1>Crear documento</h1>
@@ -179,23 +149,23 @@ function CreateDocument() {
                         moduleType.map((type, index) => {
                             if(type === 'condicional'){
                                 return  <Condicional 
-                                        setTextoDocumento={setTextoDocumento} 
-                                        textoDocumento={textoDocumento}
-                                        index={index}
+                                        setArreglo={setTextoDocumento} 
+                                        arreglo={textoDocumento}
+                                        index={[index]}
                                     />
                             }
                             if(type === 'title'){
                                 return <Titulo
-                                        setTextoDocumento={setTextoDocumento} 
-                                        textoDocumento={textoDocumento}
-                                        index={index}
+                                        setArreglo={setTextoDocumento} 
+                                        arreglo={textoDocumento}
+                                        index={[index]}
                                     />
                             }
                             if(type === 'texto'){
                                 return <Texto
-                                        setTextoDocumento={setTextoDocumento} 
-                                        textoDocumento={textoDocumento}
-                                        index={index}
+                                        setArreglo={setTextoDocumento} 
+                                        arreglo={textoDocumento}
+                                        index={[index]}
                                     />
                             }
                         })
@@ -213,7 +183,7 @@ function CreateDocument() {
                             <MenuItem value="" disabled>Agregar modulo</MenuItem>
                             <MenuItem value="condicional">Condicional</MenuItem>
                             <MenuItem value="texto">Texto</MenuItem>
-                            <MenuItem value="title">Titulo Documento</MenuItem>
+                            <MenuItem value="titulo">Titulo Documento</MenuItem>
                         </Select>
                     </FormControl>
                 </FormGroup>

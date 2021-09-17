@@ -14,13 +14,19 @@ const useStyles = makeStyles((theme) => ({
         }
     },
 }));
-function Texto({setTextoDocumento, textoDocumento,index}) {
+function Texto({setArreglo, arreglo,index}) {
     const classes = useStyles();
 
     const handleTitulo = e=>{
-        const valores = [...textoDocumento];
-        valores[index][e.target.name] = e.target.value
-        setTextoDocumento(valores)
+        const valores = [...arreglo];
+        console.log(index.length)
+        if(index.length > 1){
+            valores[index[0]][index[1]].titulo = e.target.value
+            
+        }else{
+            valores[index[0]].titulo = e.target.value
+        }
+        setArreglo(valores)
     }
     return (
         <div>
