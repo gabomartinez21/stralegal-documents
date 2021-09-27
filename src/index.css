@@ -71,3 +71,9 @@ aside.sidebar h2{
   fill:#fff;
   font-size: 1.4rem;
 }
+
+.opcion{
+  padding-left:1rem;
+  display: block;
+  width:100%;
+}

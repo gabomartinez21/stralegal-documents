@@ -42,6 +42,8 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+// TODO mas firmas con el nomnbre de la persona para accionistas
+
 function CreateDocument() {
     const classes = useStyles();
     const [document, dispatch] = useContext(DocumentContext)
@@ -75,6 +77,11 @@ function CreateDocument() {
                 texto:''
             }])
         }
+        if(moduleType[moduleType.length-1] === 'repetir'){
+            setTextoDocumento([...textoDocumento, {
+                repetir:''
+            }])
+        }
         if(moduleType[moduleType.length-1] === 'titulo'){
             setTextoDocumento([...textoDocumento, {
                 titulo:''
@@ -94,7 +101,7 @@ function CreateDocument() {
             'texto_doc':JSON.stringify(data.textoDocumento),
             'type':'guardar'
         }
-        const res = await axios.post('http://192.168.142.1/gabo/starlegal/admin/v1/documentos.php', {
+        const res = await axios.post('https://yapaydigital.pe/starlegal/admin/v1/documentos.php', {
             data: JSON.stringify(body),
         })
         console.log(res)
@@ -121,7 +128,7 @@ function CreateDocument() {
             <h1>Crear documento</h1>
 
             <form id="listado-form" method="post" onSubmit={handleSubmit}>
-                <div class="row">
+                <div className="row">
                     <FormGroup className={classes.boxInput}>
                         <Typography variante="h3">Titulo del Documento</Typography>
                         <TextField 
@@ -168,6 +175,14 @@ function CreateDocument() {
                                         index={[index]}
                                     />
                             }
+                            if(type === 'repetir'){
+                                return <Texto
+                                        setArreglo={setTextoDocumento} 
+                                        arreglo={textoDocumento}
+                                        index={[index]}
+                                        modulo="repetir"
+                                    />
+                            }
                         })
                     )}
                 </div>
@@ -184,6 +199,7 @@ function CreateDocument() {
                             <MenuItem value="condicional">Condicional</MenuItem>
                             <MenuItem value="texto">Texto</MenuItem>
                             <MenuItem value="titulo">Titulo Documento</MenuItem>
+                            <MenuItem value="repetir">Modulo de repetición</MenuItem>
                         </Select>
                     </FormControl>
                 </FormGroup>

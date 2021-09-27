@@ -8,7 +8,7 @@ function Sidebar() {
         <aside className="sidebar">
             <h2>StarLegal</h2>
 
-            <List class="nav-sidebar" component="nav">
+            <List className="nav-sidebar" component="nav">
                 <ListItem>
                     <ListItemIcon>
                         <FormatListBulleted/> 

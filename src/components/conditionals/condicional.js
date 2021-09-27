@@ -83,6 +83,13 @@ function Condicional({setArreglo, arreglo, index}) {
                 condicionTexto[pos]=modulo;
                 setCondicional(condicionTexto)
                 break;
+            case 'repetir':
+                modulo = [...condicional[pos]]
+                modulo.push({repetir:''});
+                const condicionRepetir = [...condicional]
+                condicionRepetir[pos]=modulo;
+                setCondicional(condicionRepetir)
+                break;
             case 'titulo':
                 modulo = [...condicional[pos]]
                 modulo.push({titulo:''});
@@ -140,6 +147,7 @@ function Condicional({setArreglo, arreglo, index}) {
                                     onChange={(e) => handleTitle(e, moduleCond, i)}
                                     variant="outlined"
                                     className={classes.textInput}
+                                    helperText="Introduce el valor de la respuesta a la condición de las variables"
                                 />
                             </FormGroup>
 
@@ -168,6 +176,14 @@ function Condicional({setArreglo, arreglo, index}) {
                                                 index={[i,indexC+1]}
                                             />
                                     }
+                                    if(type === 'repetir'){
+                                        return <Texto
+                                                setArreglo={setCondicional} 
+                                                arreglo={condicional}
+                                                index={[i,indexC+1]}
+                                                modulo="repetir"
+                                            />
+                                    }
                                 })
                             )}
                         </div>
@@ -182,7 +198,7 @@ function Condicional({setArreglo, arreglo, index}) {
                                     <MenuItem value="condicional">Condicional</MenuItem>
                                     <MenuItem value="texto">Texto</MenuItem>
                                     <MenuItem value="titulo">Titulo Documento</MenuItem>
-                                    <MenuItem value="close">Cierre Condicional</MenuItem>
+                                    <MenuItem value="repetir">Modulo repetitivo</MenuItem>
                                 </Select>
                             </FormControl>
                         </FormGroup>

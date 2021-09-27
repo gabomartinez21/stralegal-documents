@@ -14,16 +14,28 @@ const useStyles = makeStyles((theme) => ({
         }
     },
 }));
-function Texto({setArreglo, arreglo, index}) {
+function Texto({setArreglo, arreglo, index, modulo}) {
     const classes = useStyles();
 
     const handleText = e=>{
         const valores = [...arreglo];
-        if(index.length > 1){
-            valores[index[0]][index[1]].texto = e.target.value;
+        if(modulo === 'repetir'){
+            if(index.length > 1){
+                valores[index[0]][index[1]].repetir = e.target.value;
+    
+            }else{
+                valores[index[0]].repetir = e.target.value;
+    
+            }
 
         }else{
-            valores[index[0]].texto = e.target.value;
+            if(index.length > 1){
+                valores[index[0]][index[1]].texto = e.target.value;
+    
+            }else{
+                valores[index[0]].texto = e.target.value;
+    
+            }
 
         }
         setArreglo(valores)

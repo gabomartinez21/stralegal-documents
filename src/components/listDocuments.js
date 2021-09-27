@@ -9,7 +9,7 @@ function ListDocuments() {
     const [documents, setDocuments] = useState([]);
     
     const getDocuments = async () => {
-        const res = await axios.get('http://192.168.142.1/gabo/starlegal/admin/v1/documentos.php?documentos=0')
+        const res = await axios.get('https://yapaydigital.pe/starlegal/admin/v1/documentos.php?documentos=0')
         setDocuments(res.data.body)
     }
     useEffect(()=>{
