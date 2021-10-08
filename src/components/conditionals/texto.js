@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react';
 import {TextField, Typography, FormGroup, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -16,6 +16,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 function Texto({setArreglo, arreglo, index, modulo}) {
     const classes = useStyles();
+    const [texto, setTexto] = useState();
+
+    useEffect(()=>{
+        
+        if(modulo === 'repetir'){
+            if(index.length > 1){
+                setTexto(arreglo[index[0]][index[1]].repetir);    
+            }else{
+                setTexto(arreglo[index[0]].repetir)    
+            }
+        }else{
+            if(index.length > 1){
+                setTexto(arreglo[index[0]][index[1]].texto);
+            }else{
+                setTexto(arreglo[index[0]].texto);
+            }
+        }
+    }, []);
 
     const handleText = e=>{
         const valores = [...arreglo];
@@ -38,9 +56,10 @@ function Texto({setArreglo, arreglo, index, modulo}) {
             }
 
         }
+        setTexto(e.target.value);
         setArreglo(valores)
     }
-
+    
     return (
         <div>
             <FormGroup className={classes.boxInput}>
@@ -50,6 +69,7 @@ function Texto({setArreglo, arreglo, index, modulo}) {
                     variant="outlined"
                     rows={6}
                     name="texto"
+                    value={texto}
                     multiline
                     onChange={handleText}
                 />

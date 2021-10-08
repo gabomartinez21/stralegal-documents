@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react';
 import {TextField, Typography, FormGroup, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -16,10 +16,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 function Texto({setArreglo, arreglo,index}) {
     const classes = useStyles();
+    const [titulo, setTitulo] = useState('');
+
+    useEffect(() => {
+        if(index.length > 1){
+            setTitulo(arreglo[index[0]][index[1]].titulo);
+            
+        }else{
+            setTitulo(arreglo[index[0]].titulo);
+        }
+    }, [])
 
     const handleTitulo = e=>{
         const valores = [...arreglo];
-        console.log(index.length)
         if(index.length > 1){
             valores[index[0]][index[1]].titulo = e.target.value
             
@@ -37,6 +46,7 @@ function Texto({setArreglo, arreglo,index}) {
                     type="text"
                     placeholder="Titulo"
                     variant="outlined"
+                    value={titulo}
                     className={classes.textInput}
                     onChange={handleTitulo}
                 />

@@ -77,3 +77,20 @@ aside.sidebar h2{
   display: block;
   width:100%;
 }
+.textCenter span{
+  text-align:center;
+  display:block;
+  margin: 0 auto;
+}
+.centerTable{
+  display: flex!important;
+  justify-content: center;
+}
+
+.btn-edit:hover{
+  background-color:#e7da2a!important;
+  
+}
+.btn-delete:hover{
+  background-color:#e72a2a!important;
+}

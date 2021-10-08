@@ -45,13 +45,9 @@ function Condicional({setArreglo, arreglo, index}) {
     const classes = useStyles();
     const [moduleType, setModuleType] = useState([[],[]]);
     const [expanded, setExpanded] = useState('panel0');
-    const [condicional, setCondicional] = useState([
-        [{
-            tituloCond:''
-        }],
-        [{
-            tituloCond:''
-        }],
+    const [condicional, setCondicional] = useState([ 
+        {tituloCond:""},
+        {tituloCond:""}
     ])
 
     useEffect(() => {
@@ -59,18 +55,35 @@ function Condicional({setArreglo, arreglo, index}) {
         if(index.length > 1){
             if(copyTextoDocumento[index[0]]){
                 copyTextoDocumento[index[0]][index[1]].condicion = condicional
-    
             }
-            
         }else{
             if(copyTextoDocumento[index[0]]){
                 copyTextoDocumento[index[0]].condicion = condicional
-    
             }
-
         }
         setArreglo(copyTextoDocumento)
     }, [condicional]);
+
+    const getModules = () => {
+        
+        const modulesDB = [];
+        arreglo[index].condicion.forEach((module) => {
+            if(module.texto !== undefined) {
+                modulesDB.push('texto');
+            }else if(module.condicion !== undefined) {
+                modulesDB.push('condicion');
+            }else if(module.titulo !== undefined) {
+                modulesDB.push("titulo");
+            }else if(module.repetir !== undefined) {
+                modulesDB.push('repetir');
+            }
+        })
+        setModuleType(modulesDB);
+    }
+
+    useEffect(() => {
+        // getModules();
+    },[])
 
 
     const handleAddModule = (pos, type) => {
@@ -143,7 +156,7 @@ function Condicional({setArreglo, arreglo, index}) {
                                     id="name"
                                     type="text"
                                     placeholder="Titulo"
-                                    value={moduleCond[0].tituloCond}
+                                    // value={moduleCond[i].tituloCond}
                                     onChange={(e) => handleTitle(e, moduleCond, i)}
                                     variant="outlined"
                                     className={classes.textInput}
@@ -195,7 +208,7 @@ function Condicional({setArreglo, arreglo, index}) {
                                     onChange={(e) => handleAgregar(e, i)}
                                 >
                                     <MenuItem value="" disabled>Agregar modulo</MenuItem>
-                                    <MenuItem value="condicional">Condicional</MenuItem>
+                                    <MenuItem value="condicion">Condicional</MenuItem>
                                     <MenuItem value="texto">Texto</MenuItem>
                                     <MenuItem value="titulo">Titulo Documento</MenuItem>
                                     <MenuItem value="repetir">Modulo repetitivo</MenuItem>

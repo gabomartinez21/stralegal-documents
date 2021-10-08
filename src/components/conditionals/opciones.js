@@ -12,8 +12,7 @@ function Opcion({setArray, array, index, pos}) {
         variable:'',
         descripcion: ''
     })
-    console.log(pos)
-    console.log(index)
+    
     useEffect(()=>{
         const newArr = [...array];
         array[index].opciones[pos] = opcion;

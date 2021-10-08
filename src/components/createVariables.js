@@ -14,6 +14,8 @@ import Opcion from './conditionals/opciones';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import axios from 'axios';
+import { useSnackbar } from 'notistack';
+
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -31,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 function CreateVariables() {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
     const [inputFields, setInputFields] = useState([
         { variable: '', descripcion: '', tipo:''},
     ]);
@@ -39,7 +42,7 @@ function CreateVariables() {
     const [selectedDoc, setSelectedDoc] = useState(0);
 
     const getDocuments = async () =>{
-        const docs = await axios.get('https://yapaydigital.pe/starlegal/admin/v1/documentos.php?documentos=0');
+        const docs = await axios.get('https://pandacode-ve.xyz/starlegal/admin/v1/documentos.php?documentos=0');
         setDocuments(docs.data.body);
     }
     useEffect(()=> {
@@ -53,9 +56,17 @@ function CreateVariables() {
             'variables':JSON.stringify(inputFields),
             'type':'guardar'
         }
-        const res = await axios.post('https://yapaydigital.pe/starlegal/admin/v1/variables.php', {
-            data: JSON.stringify(body),
-        })
+        const res = await axios.post('https://pandacode-ve.xyz/starlegal/admin/v1/variables.php', JSON.stringify(body))
+
+        if(res.data.ok){
+            enqueueSnackbar('Variables guardadas', { 
+                variant: 'success',
+            });
+        }else{
+            enqueueSnackbar('Ha ocurrido un error, intentalo de nuevo', { 
+                variant: 'error',
+            });
+        }
 
     }
 

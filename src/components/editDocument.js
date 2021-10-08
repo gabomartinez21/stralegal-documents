@@ -3,6 +3,7 @@ import {
     Select,
     FormControl,
     MenuItem,
+    InputLabel,
     TextField,
     Typography,
     Button,
@@ -12,6 +13,7 @@ import {
 import DocumentContext from '../context/DocumentContext';
 import {DOCUMENT_ACTIONS} from '../context/DocumentProvider';
 import axios from 'axios';
+import {useParams} from 'react-router-dom';
 
 import Texto from './conditionals/texto'
 import Condicional from './conditionals/condicional'
@@ -44,23 +46,42 @@ const useStyles = makeStyles((theme) => ({
 
 // TODO mas firmas con el nomnbre de la persona para accionistas
 
-function CreateDocument() {
+function EditDocument() {
+    const {id} = useParams();
     const classes = useStyles();
-    const [, dispatch] = useContext(DocumentContext)
+    const [document, dispatch] = useContext(DocumentContext)
     const { enqueueSnackbar } = useSnackbar();
     const [titulo, setTitulo] = useState('');
     const [textoDocumento, setTextoDocumento] = useState([]);
-    const [moduleType, setModuleType] = useState(['']);
-    
+    const [moduleType, setModuleType] = useState(['']);  
+
+    const getDocument = async () => {
+        const res = await axios.get(`https://pandacode-ve.xyz/starlegal/admin/v1/documentos.php?documentos=${id}`);
+        const tituloBD = res.data.body[0].titulo_doc;
+        setTitulo(tituloBD);
+        const textoDB = JSON.parse(res.data.body[0].texto_doc);
+        setTextoDocumento(textoDB);
+        const modulesDB = [];
+        textoDB.forEach(module => {
+            if(module.texto !== undefined) {
+                modulesDB.push('texto');
+            }else if(module.condicion !== undefined) {
+                modulesDB.push('condicion');
+            }else if(module.titulo !== undefined) {
+                modulesDB.push("titulo");
+            }else if(module.repetir !== undefined) {
+                modulesDB.push('repetir');
+            }
+        })
+        setModuleType(modulesDB);
+    }
     useEffect(()=>{
-        if(textoDocumento.length === 0){
-            setTextoDocumento([...textoDocumento, {texto:''}])
-        }
+        getDocument();
     },[])
 
 
     useEffect(()=>{
-        if(moduleType[moduleType.length-1] === 'condicional'){
+        if(moduleType[moduleType.length-1] === 'condicion'){
             setTextoDocumento([...textoDocumento, {
                 condicion:[ 
                     [{tituloCond:""}],
@@ -86,21 +107,15 @@ function CreateDocument() {
         }
     }, [moduleType])
 
-    const handleTexto = e=>{
-        const valores = [...textoDocumento];
-        valores[0][e.target.name] = e.target.value
-        setTextoDocumento(valores)
-    }
-
     const enviarDatos = async (data) => {
         const body = {
             'titulo_doc':data.titulo,
             'texto_doc':JSON.stringify(data.textoDocumento),
-            'type':'guardar'
+            'type':'actualizar'
         }
-        // const res = await axios.post('http://192.168.1.10/gabo/starlegal/admin/v1/documentos.php', JSON.stringify(body))
-        const res = await axios.post('https://pandacode-ve.xyz/starlegal/admin/v1/documentos.php', JSON.stringify(body))
-        console.log(res);
+        const res = await axios.post('http://192.168.1.10/gabo/starlegal/admin/v1/documentos.php', JSON.stringify(body))
+        // const res = await axios.post('https://pandacode-ve.xyz/starlegal/admin/v1/documentos.php', JSON.stringify(body))
+        
         if(res.data.ok){
             enqueueSnackbar('Tu documento se guardo satisfactoriamente', { 
                 variant: 'success',
@@ -151,34 +166,35 @@ function CreateDocument() {
                 <div className="condicionales">
                     {React.Children.toArray(
                         moduleType.map((type, index) => {
-                            if(type === 'condicional'){
+                            if(type === 'condicion'){
+                                
                                 return  <Condicional 
-                                        setArreglo={setTextoDocumento} 
-                                        arreglo={textoDocumento}
-                                        index={[index]}
-                                    />
+                                            setArreglo={setTextoDocumento} 
+                                            arreglo={textoDocumento}
+                                            index={[index]}
+                                        />
                             }
                             if(type === 'titulo'){
                                 return <Titulo
-                                        setArreglo={setTextoDocumento} 
-                                        arreglo={textoDocumento}
-                                        index={[index]}
-                                    />
+                                            setArreglo={setTextoDocumento} 
+                                            arreglo={textoDocumento}
+                                            index={[index]}
+                                        />
                             }
                             if(type === 'texto'){
                                 return <Texto
-                                        setArreglo={setTextoDocumento} 
-                                        arreglo={textoDocumento}
-                                        index={[index]}
-                                    />
+                                            setArreglo={setTextoDocumento} 
+                                            arreglo={textoDocumento}
+                                            index={[index]}
+                                        />
                             }
                             if(type === 'repetir'){
                                 return <Texto
-                                        setArreglo={setTextoDocumento} 
-                                        arreglo={textoDocumento}
-                                        index={[index]}
-                                        modulo="repetir"
-                                    />
+                                            setArreglo={setTextoDocumento} 
+                                            arreglo={textoDocumento}
+                                            index={[index]}
+                                            modulo="repetir"
+                                        />
                             }
                         })
                     )}
@@ -193,7 +209,7 @@ function CreateDocument() {
                             onChange={e => setModuleType([...moduleType, e.target.value])}
                         >
                             <MenuItem value="" disabled>Agregar modulo</MenuItem>
-                            <MenuItem value="condicional">Condicional</MenuItem>
+                            <MenuItem value="condicion">Condicional</MenuItem>
                             <MenuItem value="texto">Texto</MenuItem>
                             <MenuItem value="titulo">Titulo Documento</MenuItem>
                             <MenuItem value="repetir">Modulo de repetición</MenuItem>
@@ -211,5 +227,4 @@ function CreateDocument() {
     )
 }
 
-export default CreateDocument
-
+export default EditDocument

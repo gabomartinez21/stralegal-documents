@@ -1,15 +1,21 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios';
 import {Table, TableHead, TableCell, TableBody, TableRow, Container, Button} from '@material-ui/core';
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import CreateIcon from '@material-ui/icons/Create';
 import styled from 'styled-components';
+import {useHistory} from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+
 
 function ListDocuments() {
-
-
+    const history = useHistory()
+    const { enqueueSnackbar } = useSnackbar();
     const [documents, setDocuments] = useState([]);
     
     const getDocuments = async () => {
-        const res = await axios.get('https://yapaydigital.pe/starlegal/admin/v1/documentos.php?documentos=0')
+        // const res = await axios.get('http://192.168.1.10/gabo/starlegal/admin/v1/documentos.php?documentos=0')
+        const res = await axios.get('https://pandacode-ve.xyz/starlegal/admin/v1/documentos.php?documentos=0')
         setDocuments(res.data.body)
     }
     useEffect(()=>{
@@ -18,11 +24,29 @@ function ListDocuments() {
 
 
     const handleEdit = (id) =>{
-        console.log(id)
+        history.push(`/editar-documento/${id}`)
 
     }
-    const handleDelete = (id) =>{
-        console.log(id)
+    const handleDelete = async (id) =>{
+        
+        const data = {
+            "type":"eliminar",
+            "id":id
+            
+        }
+        const newDocs = documents.filter(documento => documento.id_doc !== id);
+        
+        const res = await axios.post('http://192.168.1.10/gabo/starlegal/admin/v1/documentos.php', JSON.stringify(data));
+        if(res.data.ok){
+            setDocuments(newDocs);
+            enqueueSnackbar('Documento eliminado', { 
+                variant: 'success',
+            });
+        }else{
+            enqueueSnackbar('Ha ocurrido un error, intentalo de nuevo', { 
+                variant: 'error',
+            });
+        }
     }
 
     return (
@@ -44,10 +68,16 @@ function ListDocuments() {
                     {React.Children.toArray(documents.map(document => (
                         <TableRow>
                             <TableCell>{document.titulo_doc}</TableCell>
-                            <TableCell>{document.fecha_c}</TableCell>
-                            <TableCell>
-                                <Button onClick={() => handleEdit(document.id_doc)}>edit</Button>
-                                <Button onClick={() => handleDelete(document.id_doc)}>elim</Button>
+                            <TableCell className="textCenter">
+                                <span>{document.fecha_c}</span>
+                            </TableCell>
+                            <TableCell className="centerTable">
+                                <Button className="btn-edit" onClick={() => handleEdit(document.id_doc)}>
+                                    <CreateIcon/>
+                                </Button>
+                                <Button className="btn-delete" onClick={() => handleDelete(document.id_doc)}>
+                                    <DeleteOutlineOutlinedIcon/>
+                                </Button>
                             </TableCell>
                         </TableRow>
                     )))}

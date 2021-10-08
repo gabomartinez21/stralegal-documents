@@ -3,6 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import CreateDocument from './components/createDocument';
+import EditDocument from './components/editDocument';
 import CreateVariables from './components/createVariables';
 import ListDocuments from './components/listDocuments';
 import Sidebar from './components/sidebar';
@@ -23,6 +24,9 @@ function App() {
                 </Route>
                 <Route path="/crear-documento">
                   <CreateDocument />
+                </Route>
+                <Route path="/editar-documento/:id">
+                  <EditDocument />
                 </Route>
                 <Route path="/crear-variables">
                   <CreateVariables />
