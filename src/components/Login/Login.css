@@ -1,0 +1,77 @@
+
+.bg{
+  background-image: url(./background_login.png);
+  /* background-position: center center; */
+  height: 100vh;
+  background-repeat: no-repeat; 
+}
+
+.logo_startLegal{
+    width: 60%;
+}
+
+.input-wrapper{
+    align-items: center;
+    display: flex;
+    flex-flow: row-reverse;
+    width: 30rem;
+}
+
+.input-wrapper .email, .password {
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-left: 0;
+    border-radius: 0 .75rem .75rem  0;
+    padding: 1.3rem 0;    
+    font-size: 1.2rem;       
+    transition: border-color .2s ease;
+    width: 100%;
+  }
+
+  .input-wrapper .email + i, .password + i {
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: .75rem 0 0 .75rem;
+    border-right: 0;
+    font-size: 1.4rem;
+    padding: 1.5rem .65rem;    
+    transition: border-color .2s ease;
+  }
+
+  .input-wrapper .email:focus, .password:focus {
+    border-color: #999;
+    outline: none;
+  }
+  .input-wrapper .email:focus + i, .password:focus + i {
+    border-color: #999;
+  }
+  
+  .login-admin-btn{
+      width: 30rem;
+      font-size: 1.575rem;
+      border-radius: 3.75rem;
+      padding: .875rem .5rem; 
+      user-select: none;
+      border: 1px solid transparent;
+      transition: color .15s ease-in-out,background-color .15s ease-in-out, border-color .15s ease-in-out;
+    }
+    .login-admin-btn:hover{
+        background-color: #1B6A97;
+        border-color: #1B6A97
+    }
+
+  .login-admin-btn--blue{
+      background-color: #207AAD;
+      color: #fff;      
+  }
+
+  .login-admin__link{
+      text-decoration: none;
+      color: #000;
+      font-size: 1.25rem;
+      margin-left: 6rem;
+      transition: color .15s ease-in-out;
+  }
+  .login-admin__link:hover{    
+    color: #207AAD;
+}
