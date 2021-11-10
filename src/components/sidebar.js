@@ -13,7 +13,13 @@ function Sidebar() {
                     <ListItemIcon>
                         <FormatListBulleted/> 
                     </ListItemIcon>
-                    <Link to="/listar-documentos">Listar Documentos</Link>
+                    <Link to="/listar-documentos"> Listado de Documentos</Link>
+                </ListItem>
+                <ListItem>
+                    <ListItemIcon>
+                        <FormatListBulleted/> 
+                    </ListItemIcon>
+                    <Link to="/lista-descripciones"> Descripciones</Link>
                 </ListItem>
                 <ListItem>
                     <ListItemIcon>
@@ -25,7 +31,7 @@ function Sidebar() {
                     <ListItemIcon>
                         <AddCircle/>
                     </ListItemIcon>
-                    <Link to="/crear-variables"> Crear Variables</Link>
+                    <Link to="/crear-variables"> Crear Preguntas</Link>
                 </ListItem>
             </List>
         </aside>

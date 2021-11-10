@@ -19,23 +19,38 @@ function Texto({setArreglo, arreglo,index}) {
     const [titulo, setTitulo] = useState('');
 
     useEffect(() => {
-        if(index.length > 1){
-            setTitulo(arreglo[index[0]][index[1]].titulo);
-            
-        }else{
-            setTitulo(arreglo[index[0]].titulo);
+        if(arreglo[index]){
+            if(index.length > 1){
+                if(arreglo[index[0]][index[1]+1]){
+                    setTitulo(arreglo[index[0]][index[1]+1].titulo);
+                    
+                }else{
+                    setTitulo(arreglo[index[0]][index[1]].titulo);
+
+                }
+                
+            }else{
+                setTitulo(arreglo[index[0]].titulo);
+            }
+
         }
     }, [])
 
     const handleTitulo = e=>{
         const valores = [...arreglo];
+        setTitulo(e.target.value);
         if(index.length > 1){
-            valores[index[0]][index[1]].titulo = e.target.value
-            
+            if(arreglo[index[0]][index[1]+1]){
+                valores[index[0]][index[1]+1].titulo = e.target.value;
+                
+            }else{
+                valores[index[0]][index[1]].titulo = e.target.value;
+
+            }
         }else{
-            valores[index[0]].titulo = e.target.value
+            valores[index[0]].titulo = e.target.value;
         }
-        setArreglo(valores)
+        setArreglo(valores);
     }
     return (
         <div>

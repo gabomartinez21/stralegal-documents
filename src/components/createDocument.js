@@ -18,7 +18,7 @@ import Condicional from './conditionals/condicional'
 import Titulo from './conditionals/titulo'
 import { useSnackbar } from 'notistack';
 
-
+import {URLSERVER} from '../App';
 
 const useStyles = makeStyles((theme) => ({
     textInput: {
@@ -76,7 +76,8 @@ function CreateDocument() {
         }
         if(moduleType[moduleType.length-1] === 'repetir'){
             setTextoDocumento([...textoDocumento, {
-                repetir:''
+                repetir:'',
+                variable:'',
             }])
         }
         if(moduleType[moduleType.length-1] === 'titulo'){
@@ -86,11 +87,6 @@ function CreateDocument() {
         }
     }, [moduleType])
 
-    const handleTexto = e=>{
-        const valores = [...textoDocumento];
-        valores[0][e.target.name] = e.target.value
-        setTextoDocumento(valores)
-    }
 
     const enviarDatos = async (data) => {
         const body = {
@@ -98,9 +94,8 @@ function CreateDocument() {
             'texto_doc':JSON.stringify(data.textoDocumento),
             'type':'guardar'
         }
-        // const res = await axios.post('http://192.168.1.10/gabo/starlegal/admin/v1/documentos.php', JSON.stringify(body))
-        const res = await axios.post('https://pandacode-ve.xyz/starlegal/admin/v1/documentos.php', JSON.stringify(body))
-        console.log(res);
+        const res = await axios.post(`${URLSERVER}/admin/v1/documentos.php`, JSON.stringify(body))
+        
         if(res.data.ok){
             enqueueSnackbar('Tu documento se guardo satisfactoriamente', { 
                 variant: 'success',
@@ -188,7 +183,7 @@ function CreateDocument() {
                         <p>Agregar los elementos necesarios para el documento</p>
                         <Select
                             id="simple-select"
-                            value={moduleType[moduleType.length-1]}
+                            value=""
                             variant="outlined"
                             onChange={e => setModuleType([...moduleType, e.target.value])}
                         >
@@ -212,4 +207,3 @@ function CreateDocument() {
 }
 
 export default CreateDocument
-
