@@ -6,7 +6,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import styled from 'styled-components';
 import {useHistory} from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-
+import {URLSERVER,URLFRONT} from '../App';
 
 function ListDocuments() {
     const history = useHistory()
@@ -14,8 +14,8 @@ function ListDocuments() {
     const [documents, setDocuments] = useState([]);
     
     const getDocuments = async () => {
-        // const res = await axios.get('http://192.168.1.10/gabo/starlegal/admin/v1/documentos.php?documentos=0')
-        const res = await axios.get('https://pandacode-ve.xyz/starlegal/admin/v1/documentos.php?documentos=0')
+        
+        const res = await axios.get(`${URLSERVER}/admin/v1/documentos.php?documentos=0`)
         setDocuments(res.data.body)
     }
     useEffect(()=>{
@@ -32,11 +32,11 @@ function ListDocuments() {
         const data = {
             "type":"eliminar",
             "id":id
-            
         }
         const newDocs = documents.filter(documento => documento.id_doc !== id);
         
-        const res = await axios.post('http://192.168.1.10/gabo/starlegal/admin/v1/documentos.php', JSON.stringify(data));
+        const res = await axios.post(`${URLSERVER}/admin/v1/documentos.php`, JSON.stringify(data));
+        
         if(res.data.ok){
             setDocuments(newDocs);
             enqueueSnackbar('Documento eliminado', { 
@@ -46,6 +46,13 @@ function ListDocuments() {
             enqueueSnackbar('Ha ocurrido un error, intentalo de nuevo', { 
                 variant: 'error',
             });
+        }
+    }
+
+    const redirectVariable = (idVar, idDoc) => {
+        if(idVar > 0){
+            history.push(`/editar-variable/${idVar}/${idDoc}`);
+
         }
     }
 
@@ -60,6 +67,7 @@ function ListDocuments() {
                 <TableHead>
                     <TableRow>
                         <StyledTableCell>Nombre</StyledTableCell>
+                        <StyledTableCell>Variable</StyledTableCell>
                         <StyledTableCell>Fecha</StyledTableCell>
                         <StyledTableCell>Acción</StyledTableCell>
                     </TableRow>
@@ -68,6 +76,11 @@ function ListDocuments() {
                     {React.Children.toArray(documents.map(document => (
                         <TableRow>
                             <TableCell>{document.titulo_doc}</TableCell>
+                            <TableCell className="textCenter">
+                                <Button
+                                    onClick={() => redirectVariable(document.id_variables, document.id_doc)}
+                                >Ver variables</Button>
+                            </TableCell>
                             <TableCell className="textCenter">
                                 <span>{document.fecha_c}</span>
                             </TableCell>

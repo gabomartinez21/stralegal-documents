@@ -17,24 +17,52 @@ const useStyles = makeStyles((theme) => ({
 function Texto({setArreglo, arreglo, index, modulo}) {
     const classes = useStyles();
     const [texto, setTexto] = useState();
+    const [variable, setVariable] = useState();
 
     useEffect(()=>{
         
-        if(modulo === 'repetir'){
-            if(index.length > 1){
-                setTexto(arreglo[index[0]][index[1]].repetir);    
+        if(arreglo[index[0]]){
+            if(modulo === 'repetir'){
+                if(index.length > 1){
+                    if(arreglo[index[0]][index[1]+1]){
+                        setTexto(arreglo[index[0]][index[1]+1].repetir);    
+                        setVariable(arreglo[index[0]][index[1]+1].variable);
+                    }else{
+                        setTexto(arreglo[index[0]][index[1]].repetir);    
+                        setVariable(arreglo[index[0]][index[1]].variable);    
+
+                    }
+                }else{
+                    setTexto(arreglo[index[0]].repetir);    
+                    setVariable(arreglo[index[0]].variable)    
+                }
             }else{
-                setTexto(arreglo[index[0]].repetir)    
+                if(index.length > 1){
+                    if(arreglo[index[0]][index[1]+1]){
+                        setTexto(arreglo[index[0]][index[1]+1].texto);
+                        
+                    }else{
+                        setTexto(arreglo[index[0]][index[1]].texto);
+
+                    }
+                }else{
+                    setTexto(arreglo[index[0]].texto);
+                }
             }
-        }else{
-            if(index.length > 1){
-                setTexto(arreglo[index[0]][index[1]].texto);
-            }else{
-                setTexto(arreglo[index[0]].texto);
-            }
+
         }
     }, []);
 
+    const handleVariable = e => {
+        const valores = [...arreglo];
+        if(index.length > 1){
+            valores[index[0]][index[1]].variable = e.target.value;
+
+        }else{
+            valores[index[0]].variable = e.target.value;
+
+        }
+    }
     const handleText = e=>{
         const valores = [...arreglo];
         if(modulo === 'repetir'){
@@ -63,7 +91,18 @@ function Texto({setArreglo, arreglo, index, modulo}) {
     return (
         <div>
             <FormGroup className={classes.boxInput}>
-                <Typography variante="h3">Texto Principal</Typography>
+                {modulo === 'repetir' && (
+                    <TextField 
+                        id="textoBase"
+                        variant="outlined"
+                        placeholder="Variable"
+                        name="variable"
+                        value={variable}
+                        onChange={handleVariable}
+                    />
+
+                )}
+                <Typography variante="h3">Texto</Typography>
                 <TextField 
                     id="textoBase"
                     variant="outlined"

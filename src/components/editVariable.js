@@ -14,8 +14,9 @@ import Opcion from './conditionals/opciones';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import axios from 'axios';
+import {useParams} from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import {URLSERVER,URLFRONT} from '../App';
+import {URLSERVER} from '../App';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -40,7 +41,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-function CreateVariables() {
+function EditVariables() {
+    const {idVar, idDoc} = useParams();
     const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
     const [inputFields, setInputFields] = useState([
@@ -54,27 +56,37 @@ function CreateVariables() {
     const [documents, setDocuments] = useState([]);
     const [selectedDoc, setSelectedDoc] = useState(0);
 
+    const getVariable = async () => {
+        
+        const res = await axios.get(`${URLSERVER}/admin/v1/variables.php?variables=${idVar}`);
+        const variables = JSON.parse(res.data.body[0].variables);
+        console.log('variables: ', variables);
+        setInputFields(variables);
+    }
+
     const getDocuments = async () =>{
         const docs = await axios.get(`${URLSERVER}/admin/v1/documentos.php?documentos=0`);
+        
         setDocuments(docs.data.body);
     }
     useEffect(()=> {
         getDocuments();
+        getVariable();
+        setSelectedDoc(idDoc)
     }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const body = {
-            'idDoc':selectedDoc,
+            'id':idVar,
             'variables':JSON.stringify(inputFields),
-            'type':'guardar'
+            'type':'actualizar'
         }
-        // console.log(body);
+
         const res = await axios.post(`${URLSERVER}/admin/v1/variables.php`, JSON.stringify(body))
         
-        console.log(res);
         if(res.data.ok){
-            enqueueSnackbar('Variables guardadas', { 
+            enqueueSnackbar('Variables actualizadas', { 
                 variant: 'success',
             });
         }else{
@@ -84,6 +96,8 @@ function CreateVariables() {
         }
 
     }
+
+    console.log('array: ', inputFields);
     
     const handleChangeInput = (index, j,event) => {
         const values = [...inputFields];
@@ -267,6 +281,7 @@ function CreateVariables() {
                         labelId="select-document"
                         id="select-document"
                         value={selectedDoc}
+                        defaultValue={idDoc}
                         label="Seleccionar documento"
                         onChange={e => setSelectedDoc(e.target.value)}
                         style={{minWidth:'120px'}}
@@ -282,10 +297,10 @@ function CreateVariables() {
                     color="primary" 
                     type="submit" 
                     endIcon={<Icon>send</Icon>}
-                    >Enviar</Button>
+                    >Actualizar</Button>
             </form>
         </Container>
     )
 }
 
-export default CreateVariables
+export default EditVariables

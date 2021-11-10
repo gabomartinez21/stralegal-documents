@@ -19,8 +19,7 @@ import Texto from './conditionals/texto'
 import Condicional from './conditionals/condicional'
 import Titulo from './conditionals/titulo'
 import { useSnackbar } from 'notistack';
-
-
+import {URLSERVER,URLFRONT} from '../App';
 
 const useStyles = makeStyles((theme) => ({
     textInput: {
@@ -56,10 +55,13 @@ function EditDocument() {
     const [moduleType, setModuleType] = useState(['']);  
 
     const getDocument = async () => {
-        const res = await axios.get(`https://pandacode-ve.xyz/starlegal/admin/v1/documentos.php?documentos=${id}`);
+        
+        const res = await axios.get(`${URLSERVER}/admin/v1/documentos.php?documentos=${id}`);
+        
         const tituloBD = res.data.body[0].titulo_doc;
         setTitulo(tituloBD);
         const textoDB = JSON.parse(res.data.body[0].texto_doc);
+
         setTextoDocumento(textoDB);
         const modulesDB = [];
         textoDB.forEach(module => {
@@ -109,15 +111,14 @@ function EditDocument() {
 
     const enviarDatos = async (data) => {
         const body = {
+            'id':id,
             'titulo_doc':data.titulo,
             'texto_doc':JSON.stringify(data.textoDocumento),
             'type':'actualizar'
         }
-        const res = await axios.post('http://192.168.1.10/gabo/starlegal/admin/v1/documentos.php', JSON.stringify(body))
-        // const res = await axios.post('https://pandacode-ve.xyz/starlegal/admin/v1/documentos.php', JSON.stringify(body))
-        
+        const res = await axios.post(`${URLSERVER}/admin/v1/documentos.php`, JSON.stringify(body))
         if(res.data.ok){
-            enqueueSnackbar('Tu documento se guardo satisfactoriamente', { 
+            enqueueSnackbar('Tu documento se actualizo satisfactoriamente', { 
                 variant: 'success',
             });
         }else{
@@ -146,7 +147,7 @@ function EditDocument() {
     
     return (
         <div>
-            <h1>Crear documento</h1>
+            <h1>Editar documento</h1>
 
             <form id="listado-form" method="post" onSubmit={handleSubmit}>
                 <div className="row">
@@ -221,7 +222,7 @@ function EditDocument() {
                     variant="contained" 
                     color="primary"
                     className={classes.btnSubmit}
-                >Guardar</Button>
+                >Actualizar</Button>
             </form>
         </div>
     )
