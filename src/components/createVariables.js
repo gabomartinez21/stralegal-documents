@@ -36,6 +36,13 @@ const useStyles = makeStyles((theme) => ({
         border: "1px solid #d1d1d1",
         margin: "10px 0",
         borderRadius: "8px",
+    },
+    btnEliminar:{
+        backgroundColor:"#e3e3e3",
+        display:"block",
+        border:"none",
+        margin:"2px 0 2px auto",
+        width:"fit-content"
     }
 }))
 
@@ -57,6 +64,7 @@ function CreateVariables() {
     const getDocuments = async () =>{
         const docs = await axios.get(`${URLSERVER}/admin/v1/documentos.php?documentos=0`);
         setDocuments(docs.data.body);
+        setSelectedDoc(0);
     }
     useEffect(()=> {
         getDocuments();
@@ -71,8 +79,7 @@ function CreateVariables() {
         }
         // console.log(body);
         const res = await axios.post(`${URLSERVER}/admin/v1/variables.php`, JSON.stringify(body))
-        
-        console.log(res);
+    
         if(res.data.ok){
             enqueueSnackbar('Variables guardadas', { 
                 variant: 'success',
@@ -111,7 +118,7 @@ function CreateVariables() {
     const handleAddBloque = () => {
         setInputFields([...inputFields, {
             tituloBloque:'',
-            bloque:[{ variable: '', descripcion: '', tipo:''}]
+            bloque:[{ variable: '', descripcion: '', tipo:'variable'}]
         }]);
     }
     
@@ -142,7 +149,12 @@ function CreateVariables() {
         newCond[index].condicionBloque = event.target.value;
         setInputFields(newCond);
     }
-
+    const handleDeleteBloque = (index) => {
+        const copy = [...inputFields];
+        copy.splice(index,1);
+        setInputFields(copy);
+        
+    }
     return (
         <Container>
             <h1>Crear Variables</h1>
@@ -150,6 +162,11 @@ function CreateVariables() {
                 { inputFields.map((inputField, index) => (
                     <>
                     <div key={index} className={classes.bloque}>
+                        <button 
+                            type="button"
+                            className={classes.btnEliminar} 
+                            onClick={() => handleDeleteBloque(index)}
+                        >X</button>
                         <TextField 
                             label="Titulo modulo"
                             variant="filled"
@@ -223,7 +240,7 @@ function CreateVariables() {
                                 ))}
                             </>
                         ))}
-                        <FormControl fullwidth size="medium">
+                        <FormControl className="condicion-bloque">
                             <InputLabel id="tipo">Condicion</InputLabel>
                             <Select 
                                 labelId="condicion"

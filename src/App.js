@@ -10,19 +10,22 @@ import ListDocuments from './components/listDocuments';
 import ListDescriptions from './components/listDescriptions';
 import CreateDescription from './components/createDescription';
 import EditDescription from './components/editDescription';
+import ListBlog from './components/listBlog';
+import CreateBlog from './components/createBlog.js';
+import EditBlog from './components/editBlog';
 import Sidebar from './components/sidebar';
 import Dashboard from './components/dashboard';
 import {DocumentProvider} from './context/DocumentProvider';
 
-// export const URLSERVER = 'http://192.168.142.1/gabo/starlegal';
-export const URLSERVER = 'https://pandacode-ve.xyz/starlegal/docs';
+export const URLSERVER = 'http://192.168.142.1/starlegal';
+// export const URLSERVER = 'https://pandacode-ve.xyz/starlegal';
 
 function App() {
 
 
   return (
     <DocumentProvider>
-      <Router>
+      <Router basename="/starlegal/docs">
         <div className="adminContainer">
           <Sidebar/>
           <Content>
@@ -54,6 +57,15 @@ function App() {
                 </Route>
                 <Route path="/editar-descripcion/:id">
                   <EditDescription />
+                </Route>
+                <Route path="/listado-blogs">
+                  <ListBlog />
+                </Route>
+                <Route path="/crear-blog">
+                  <CreateBlog />
+                </Route>
+                <Route path="/editar-blog/:id">
+                  <EditBlog />
                 </Route>
                 
               </Switch>

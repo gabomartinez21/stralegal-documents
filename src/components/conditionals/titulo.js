@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {TextField, Typography, FormGroup, makeStyles } from '@material-ui/core';
+import {TextField, Typography, FormGroup, makeStyles, Button } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     textInput: {
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
         }
     },
 }));
-function Texto({setArreglo, arreglo,index}) {
+function Texto({setArreglo, arreglo,index, handleDelete}) {
     const classes = useStyles();
     const [titulo, setTitulo] = useState('');
 
@@ -55,6 +55,7 @@ function Texto({setArreglo, arreglo,index}) {
     return (
         <div>
             <FormGroup className={classes.boxInput}>
+                <Button onClick={() => handleDelete(index)} variante="outlined" className="btnEliminar">X</Button>
                 <Typography variante="h3">Titulo</Typography>
                 <TextField 
                     name="titulo"

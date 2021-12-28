@@ -6,7 +6,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import styled from 'styled-components';
 import {useHistory} from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import {URLSERVER,URLFRONT} from '../App';
+import {URLSERVER} from '../App';
 
 function ListDocuments() {
     const history = useHistory()

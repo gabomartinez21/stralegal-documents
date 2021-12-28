@@ -1,13 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import {Description, FormatListBulleted, AddCircle} from '@material-ui/icons';
+import {Description, FormatListBulleted, AddCircle, ListOutlined, InsertDriveFileOutlined} from '@material-ui/icons';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import {List, ListItem, ListItemIcon} from '@material-ui/core';
+
 
 function Sidebar() {
     return (
         <aside className="sidebar">
             <h2>StarLegal</h2>
-
             <List className="nav-sidebar" component="nav">
                 <ListItem>
                     <ListItemIcon>
@@ -17,21 +18,27 @@ function Sidebar() {
                 </ListItem>
                 <ListItem>
                     <ListItemIcon>
-                        <FormatListBulleted/> 
-                    </ListItemIcon>
-                    <Link to="/lista-descripciones"> Descripciones</Link>
-                </ListItem>
-                <ListItem>
-                    <ListItemIcon>
                         <Description/>
                     </ListItemIcon>
                     <Link to="/crear-documento"> Crear Documento</Link>
                 </ListItem>
                 <ListItem>
                     <ListItemIcon>
+                        <InsertDriveFileOutlined/> 
+                    </ListItemIcon>
+                    <Link to="/lista-descripciones"> Descripciones</Link>
+                </ListItem>
+                <ListItem>
+                    <ListItemIcon>
                         <AddCircle/>
                     </ListItemIcon>
                     <Link to="/crear-variables"> Crear Preguntas</Link>
+                </ListItem>
+                <ListItem>
+                    <ListItemIcon>
+                        <ListOutlined/>
+                    </ListItemIcon>
+                    <Link to="/listado-blogs"> Listado de blogs</Link>
                 </ListItem>
             </List>
         </aside>
