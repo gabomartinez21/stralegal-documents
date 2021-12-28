@@ -16,6 +16,7 @@ import axios from 'axios';
 import Texto from './conditionals/texto'
 import Condicional from './conditionals/condicional'
 import Titulo from './conditionals/titulo'
+import Firma from './conditionals/firma'
 import { useSnackbar } from 'notistack';
 
 import {URLSERVER} from '../App';
@@ -50,42 +51,82 @@ function CreateDocument() {
     const { enqueueSnackbar } = useSnackbar();
     const [titulo, setTitulo] = useState('');
     const [textoDocumento, setTextoDocumento] = useState([]);
-    const [moduleType, setModuleType] = useState(['']);
+    const [moduleType, setModuleType] = useState([]);
+    const [deleteActive, setDeleteActive] = useState(false);
+
+
+    useEffect(()=>{
+        if(!deleteActive){
+
+            if(moduleType[moduleType.length-1] === 'condicional'){
+                setTextoDocumento([...textoDocumento, {
+                    condicion:[ 
+                        [{tituloCond:""}],
+                        [{tituloCond:""}]
+                    ]
+                }])
     
-    useEffect(()=>{
-        if(textoDocumento.length === 0){
-            setTextoDocumento([...textoDocumento, {texto:''}])
+            }
+            if(moduleType[moduleType.length-1] === 'texto'){
+                setTextoDocumento([...textoDocumento, {
+                    texto:''
+                }])
+            }
+            if(moduleType[moduleType.length-1] === 'firma'){
+                setTextoDocumento([...textoDocumento, {
+                    firma:''
+                }])
+            }
+            if(moduleType[moduleType.length-1] === 'repetir'){
+                setTextoDocumento([...textoDocumento, {
+                    repetir:'',
+                    variable:'',
+                }])
+            }
+            if(moduleType[moduleType.length-1] === 'titulo'){
+                setTextoDocumento([...textoDocumento, {
+                    titulo:''
+                }])
+            }
         }
-    },[])
-
-
-    useEffect(()=>{
-        if(moduleType[moduleType.length-1] === 'condicional'){
-            setTextoDocumento([...textoDocumento, {
-                condicion:[ 
-                    [{tituloCond:""}],
-                    [{tituloCond:""}]
-                ]
-            }])
-
-        }
-        if(moduleType[moduleType.length-1] === 'texto'){
-            setTextoDocumento([...textoDocumento, {
-                texto:''
-            }])
-        }
-        if(moduleType[moduleType.length-1] === 'repetir'){
-            setTextoDocumento([...textoDocumento, {
-                repetir:'',
-                variable:'',
-            }])
-        }
-        if(moduleType[moduleType.length-1] === 'titulo'){
-            setTextoDocumento([...textoDocumento, {
-                titulo:''
-            }])
-        }
+        setDeleteActive(false)
     }, [moduleType])
+
+    const handleDeleteModule = (indexMod) => {
+        const moduleCopy = moduleType.filter((mod, i) => i !== indexMod[0]);
+        const textoCopy = textoDocumento.filter((text, i) => i !== indexMod[0]);        
+        setDeleteActive(true)
+        setModuleType(moduleCopy);   
+        setTextoDocumento(textoCopy)
+    }
+
+    const handleDuplicate = (index) => {
+        const moduleCopy = [...moduleType];
+        const textoDocumentoCopy = [...textoDocumento];
+        const newModule = [];
+        const newTextoDocumento = [];
+        moduleCopy.forEach((mod, i) => {
+            if(i === index[0]){
+                newModule.push(mod)
+                newModule.push(mod)
+            }else{
+                newModule.push(mod)
+            }
+        })
+        textoDocumentoCopy.forEach((textoDoc, i) => {
+            if(i === index[0]){
+                newTextoDocumento.push(textoDoc)
+                newTextoDocumento.push(textoDoc)
+                console.log(newTextoDocumento);
+            }else{
+                newTextoDocumento.push(textoDoc)
+            }
+        })
+        console.log(newTextoDocumento)
+        setDeleteActive(true);
+        setModuleType(newModule);
+        setTextoDocumento(newTextoDocumento)
+    }
 
 
     const enviarDatos = async (data) => {
@@ -94,8 +135,9 @@ function CreateDocument() {
             'texto_doc':JSON.stringify(data.textoDocumento),
             'type':'guardar'
         }
+        console.log(body)
         const res = await axios.post(`${URLSERVER}/admin/v1/documentos.php`, JSON.stringify(body))
-        
+
         if(res.data.ok){
             enqueueSnackbar('Tu documento se guardo satisfactoriamente', { 
                 variant: 'success',
@@ -107,6 +149,7 @@ function CreateDocument() {
         }
         
     }
+    
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch({
@@ -151,6 +194,8 @@ function CreateDocument() {
                                         setArreglo={setTextoDocumento} 
                                         arreglo={textoDocumento}
                                         index={[index]}
+                                        handleDelete={handleDeleteModule}
+                                        handleDuplicate={handleDuplicate}
                                     />
                             }
                             if(type === 'titulo'){
@@ -158,6 +203,7 @@ function CreateDocument() {
                                         setArreglo={setTextoDocumento} 
                                         arreglo={textoDocumento}
                                         index={[index]}
+                                        handleDelete={handleDeleteModule}
                                     />
                             }
                             if(type === 'texto'){
@@ -165,6 +211,7 @@ function CreateDocument() {
                                         setArreglo={setTextoDocumento} 
                                         arreglo={textoDocumento}
                                         index={[index]}
+                                        handleDelete={handleDeleteModule}
                                     />
                             }
                             if(type === 'repetir'){
@@ -173,6 +220,15 @@ function CreateDocument() {
                                         arreglo={textoDocumento}
                                         index={[index]}
                                         modulo="repetir"
+                                        handleDelete={handleDeleteModule}
+                                    />
+                            }
+                            if(type === 'firma'){
+                                return <Firma
+                                        setArreglo={setTextoDocumento} 
+                                        arreglo={textoDocumento}
+                                        index={[index]}
+                                        handleDelete={handleDeleteModule}
                                     />
                             }
                         })
@@ -192,6 +248,7 @@ function CreateDocument() {
                             <MenuItem value="texto">Texto</MenuItem>
                             <MenuItem value="titulo">Titulo Documento</MenuItem>
                             <MenuItem value="repetir">Modulo de repetición</MenuItem>
+                            <MenuItem value="firma">Firma</MenuItem>
                         </Select>
                     </FormControl>
                 </FormGroup>

@@ -3,16 +3,20 @@ import axios from 'axios';
 import {URLSERVER} from '../App';
 import {Container, Box, TextField, Grid, MenuItem, Select,InputLabel, FormControl, Button} from '@material-ui/core';
 import { useSnackbar } from 'notistack';
+import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css';
+
 
 const Categorias_opciones = ['Empresas', 'Particulares']
 
 function CreateDescription() {
-const { enqueueSnackbar } = useSnackbar();
-    const [descripcion, setDescripcion] = React.useState('');
+    const { enqueueSnackbar } = useSnackbar();
     const [categoria, setCategoria] = React.useState('');
     const [precio, setPrecio] = React.useState('');
     const [documento, setDocumento] = React.useState(0);
+    
     const [documents, setDocuments] = React.useState([]);
+    const [descripcion, setDescripcion] = React.useState("Descripcion del documento");
 
     const getDocuments = async () =>{
         const docs = await axios.get(`${URLSERVER}/admin/v1/documentos.php?documentos=0`);
@@ -32,6 +36,7 @@ const { enqueueSnackbar } = useSnackbar();
             descripcion,
             type:'descripcion'
         }
+        console.log(body)
         const res = await axios.post(`${URLSERVER}/admin/v1/documentos.php`, JSON.stringify(body))
 
         if(res.data.ok){
@@ -59,13 +64,12 @@ const { enqueueSnackbar } = useSnackbar();
                 <Grid container spacing={2}>
                     <Grid item md={12} style={{'marginTop':'40px'}}>
                         <FormControl fullWidth>
-                            <TextField 
-                                variant="outlined"
-                                rows={10}
-                                name="texto"
+                            <ReactQuill
+                                theme="snow"
                                 value={descripcion}
-                                multiline
-                                onChange={e => setDescripcion(e.target.value) }
+                                onChange={setDescripcion}
+                                style={{minHeight:"300px", display: "grid",
+                                gridTemplateRows: "42px auto"}}
                             />
                         </FormControl>
                     </Grid>

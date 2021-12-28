@@ -19,47 +19,49 @@ function Opcion({setArray, array, index, bloque, pos}) {
     })
     const [firstTime, setFirstTime] = useState(true);
     
-    console.log(array[index].bloque[bloque].opciones);
     useEffect(()=>{
         if(firstTime){
-            setOpcion(array[index].bloque[bloque].opciones[pos]);
-            setFirstTime(false);
-        }
-
-    }, []);
-    useEffect(()=>{
-        if(firstTime){
-            setOpcion(array[index].bloque[bloque].opciones[pos]);
+            if(index !== undefined){
+                setOpcion(array[index].bloque[bloque].opciones[pos]);
+            }else{
+                setOpcion(array.opciones[pos])
+            }
             setFirstTime(false);
         }else{
-            const newArr = [...array];
-            newArr[index].bloque[bloque].opciones[pos] = opcion;
-            setArray(newArr);
-
+            if(index !== undefined){
+                const newArr = [...array];
+                newArr[index].bloque[bloque].opciones[pos] = opcion;
+                setArray(newArr);
+            }else{
+                const newArr = {...array};
+                newArr.opciones[pos] = opcion;
+                setArray(newArr);
+                
+            }
         }
-
     }, [opcion])
 
     const handleChangeInputOption = (e) =>{
         const newOpcion = {...opcion}
-        console.log('name ',e.target.name )
-        console.log('value ',e.target.value )
         newOpcion[e.target.name] = e.target.value;
         if(e.target.value === 'condicion'){
             newOpcion.condicion = '';
         }
-        setOpcion(newOpcion);
-        
+        if(e.target.value === 'opciones'){
+            newOpcion.opciones = [{}];
+        }
+        setOpcion(newOpcion);    
     }  
+
     const handleAddFieldsOpt = () => {   
         const newOpcion = [...array];
         newOpcion[index].bloque[bloque].opciones.push({ variable: '', descripcion: '', type:'variable'});
         setArray(newOpcion)
     }
     
-    const handleRemoveFieldsOpt = (index) => {
+    const handleRemoveFieldsOpt = () => {
         const newOpcion = [...array];
-        newOpcion[index].opciones.splice(index,1);
+        newOpcion[index].bloque[bloque].opciones.splice(pos,1);
         setArray(newOpcion);
     }
 
@@ -80,6 +82,7 @@ function Opcion({setArray, array, index, bloque, pos}) {
                 value={opcion.descripcion}
                 onChange={event => handleChangeInputOption(event)}
             />
+            
             {opcion.type === 'condicion' && (
                 <TextField
                     name="condicion"
@@ -103,6 +106,7 @@ function Opcion({setArray, array, index, bloque, pos}) {
                     <MenuItem value="variable">Variable</MenuItem>
                     <MenuItem value="seleccion">Selección</MenuItem>
                     <MenuItem value="opcion">Opción única</MenuItem>
+                    <MenuItem value="opciones">Opciones</MenuItem>
                     <MenuItem value="condicion">Condición</MenuItem>
                 </Select>
             </FormControl>
@@ -116,6 +120,13 @@ function Opcion({setArray, array, index, bloque, pos}) {
             >
                 <AddIcon />
             </IconButton>
+            {opcion.type === 'opciones' && opcion.opciones.map((op, i) => (
+                <Opcion
+                    setArray={setOpcion}
+                    array={opcion}
+                    pos={i}
+                />
+            ))}
         </div>
     )
 }

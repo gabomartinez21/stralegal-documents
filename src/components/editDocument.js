@@ -17,7 +17,9 @@ import {useParams} from 'react-router-dom';
 
 import Texto from './conditionals/texto'
 import Condicional from './conditionals/condicional'
-import Titulo from './conditionals/titulo'
+import Titulo from './conditionals/titulo';
+import Firma from './conditionals/firma';
+
 import { useSnackbar } from 'notistack';
 import {URLSERVER,URLFRONT} from '../App';
 
@@ -57,7 +59,7 @@ function EditDocument() {
     const getDocument = async () => {
         
         const res = await axios.get(`${URLSERVER}/admin/v1/documentos.php?documentos=${id}`);
-        
+        console.log(res.data.body[0]);
         const tituloBD = res.data.body[0].titulo_doc;
         setTitulo(tituloBD);
         const textoDB = JSON.parse(res.data.body[0].texto_doc);
@@ -73,6 +75,8 @@ function EditDocument() {
                 modulesDB.push("titulo");
             }else if(module.repetir !== undefined) {
                 modulesDB.push('repetir');
+            }else if(module.firma !== undefined) {
+                modulesDB.push('firma');
             }
         })
         setModuleType(modulesDB);
@@ -95,6 +99,11 @@ function EditDocument() {
         if(moduleType[moduleType.length-1] === 'texto'){
             setTextoDocumento([...textoDocumento, {
                 texto:''
+            }])
+        }
+        if(moduleType[moduleType.length-1] === 'firma'){
+            setTextoDocumento([...textoDocumento, {
+                firma:''
             }])
         }
         if(moduleType[moduleType.length-1] === 'repetir'){
@@ -128,6 +137,12 @@ function EditDocument() {
         }
         
     }
+
+    const handleDeleteModule = (indexMod) => {
+        const moduleCopy = moduleType.filter((mod, i) => i !== indexMod);
+        setModuleType(moduleCopy);   
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch({
@@ -173,6 +188,7 @@ function EditDocument() {
                                             setArreglo={setTextoDocumento} 
                                             arreglo={textoDocumento}
                                             index={[index]}
+                                            handleDelete={handleDeleteModule}
                                         />
                             }
                             if(type === 'titulo'){
@@ -180,6 +196,7 @@ function EditDocument() {
                                             setArreglo={setTextoDocumento} 
                                             arreglo={textoDocumento}
                                             index={[index]}
+                                            handleDelete={handleDeleteModule}
                                         />
                             }
                             if(type === 'texto'){
@@ -187,6 +204,7 @@ function EditDocument() {
                                             setArreglo={setTextoDocumento} 
                                             arreglo={textoDocumento}
                                             index={[index]}
+                                            handleDelete={handleDeleteModule}
                                         />
                             }
                             if(type === 'repetir'){
@@ -195,7 +213,16 @@ function EditDocument() {
                                             arreglo={textoDocumento}
                                             index={[index]}
                                             modulo="repetir"
+                                            handleDelete={handleDeleteModule}
                                         />
+                            }
+                            if(type === 'firma'){
+                                return <Firma
+                                        setArreglo={setTextoDocumento} 
+                                        arreglo={textoDocumento}
+                                        index={[index]}
+                                        handleDelete={handleDeleteModule}
+                                    />
                             }
                         })
                     )}
@@ -214,6 +241,7 @@ function EditDocument() {
                             <MenuItem value="texto">Texto</MenuItem>
                             <MenuItem value="titulo">Titulo Documento</MenuItem>
                             <MenuItem value="repetir">Modulo de repetición</MenuItem>
+                            <MenuItem value="firma">Firma</MenuItem>
                         </Select>
                     </FormControl>
                 </FormGroup>

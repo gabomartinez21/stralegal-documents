@@ -14,36 +14,37 @@ const StyledTableCell = styled.td`
     text-align:center;
 `
 
-function ListDescriptions() {
+function ListBlog() {
 
     const history = useHistory()
     const { enqueueSnackbar } = useSnackbar();
-    const [descriptions, setDescriptions] = React.useState([]);
+    const [blogs, setBlog] = React.useState([]);
     
-    const getDescriptions = async () => {
-        const res = await axios.get(`${URLSERVER}/admin/v1/documentos.php?descripcion=0`)
+    const getBlog = async () => {
+        const res = await axios.get(`${URLSERVER}/admin/v1/blog.php?blog=0`)
         // console.log(res);
-        setDescriptions(res.data.body)
+        setBlog(res.data.body)
     }
     React.useEffect(()=>{
-        getDescriptions();
+        getBlog();
     }, [])
 
     const handleEdit = (id) => {
-        history.push(`/editar-descripcion/${id}`)
+        history.push(`/editar-blog/${id}`)
     }
     
     const handleDelete = async (id) => {
-        const data = {
-            "type":"descripcion-delete",
-            "id":id
-        }
-        const newDocs = descriptions.filter(description => description.id !== id);
+        const data = new FormData();
+        data.append("type","blog-delete");
+        data.append("id",id);
+            
         
-        const res = await axios.post(`${URLSERVER}/admin/v1/documentos.php`, JSON.stringify(data));
+        const newDocs = blogs.filter(description => description.id !== id);
+        
+        const res = await axios.post(`${URLSERVER}/admin/v1/blog.php`, data);
         
         if(res.data.ok){
-            setDescriptions(newDocs);
+            setBlog(newDocs);
             enqueueSnackbar('Documento eliminado', { 
                 variant: 'success',
             });
@@ -55,27 +56,27 @@ function ListDescriptions() {
     }
     
     const handleAdd = () => {
-        history.push(`/crear-descripcion`)
+        history.push(`/crear-blog`)
     }
 
 
     return (
         <Container>
             <div>
-                <h1>Lista de descripciones</h1>
+                <h1>Lista de blogs</h1>
             </div>
             <Button onClick={handleAdd}>Agregar +</Button>
             <Table style={{marginTop:'40px'}}>
                 <TableHead>
                     <TableRow>
-                        <StyledTableCell>Documento</StyledTableCell>
+                        <StyledTableCell>Titulo</StyledTableCell>
                         <StyledTableCell>Acción</StyledTableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {React.Children.toArray(descriptions.map(description => (
+                    {React.Children.toArray(blogs.map(description => (
                         <TableRow>
-                            <TableCell>{description.titulo_doc}</TableCell>
+                            <TableCell>{description.titulo}</TableCell>
                             <TableCell className="centerTable">
                                 <Button className="btn-edit" onClick={() => handleEdit(description.id)}>
                                     <CreateIcon/>
@@ -93,4 +94,4 @@ function ListDescriptions() {
     )
 }
 
-export default ListDescriptions
+export default ListBlog

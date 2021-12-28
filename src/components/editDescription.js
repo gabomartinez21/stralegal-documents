@@ -4,6 +4,8 @@ import {URLSERVER} from '../App';
 import {useParams} from 'react-router-dom';
 import {Container, Box, TextField, Grid, MenuItem, Select,InputLabel, FormControl, Button} from '@material-ui/core';
 import { useSnackbar } from 'notistack';
+import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css';
 
 const Categorias_opciones = ['Empresas', 'Particulares']
 
@@ -76,13 +78,12 @@ function EditDescription() {
                 <Grid container spacing={2}>
                     <Grid item md={12} style={{'marginTop':'40px'}}>
                         <FormControl fullWidth>
-                            <TextField 
-                                variant="outlined"
-                                rows={10}
-                                name="texto"
+                            <ReactQuill
+                                theme="snow"
                                 value={descripcion}
-                                multiline
-                                onChange={e => setDescripcion(e.target.value) }
+                                onChange={setDescripcion}
+                                style={{minHeight:"300px", display: "grid",
+                                gridTemplateRows: "42px auto"}}
                             />
                         </FormControl>
                     </Grid>

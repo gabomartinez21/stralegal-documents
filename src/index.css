@@ -82,6 +82,10 @@ aside.sidebar h2{
   display:block;
   margin: 0 auto;
 }
+.condicion-bloque{
+  width:100%;
+  padding: 4px 10px!important;
+}
 .centerTable{
   display: flex!important;
   justify-content: center;
@@ -93,4 +97,12 @@ aside.sidebar h2{
 }
 .btn-delete:hover{
   background-color:#e72a2a!important;
+}
+
+.btnEliminar {
+  width: fit-content;
+  z-index:22;
+  margin-left: auto!important;
+  color: #896f6f!important;
+  margin-bottom: -38px!important;
 }

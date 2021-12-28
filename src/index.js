@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { SnackbarProvider } from 'notistack';
+import 'draft-js/dist/Draft.css';
+
 ReactDOM.render(
   <React.StrictMode>
     <SnackbarProvider maxSnack={3}>
