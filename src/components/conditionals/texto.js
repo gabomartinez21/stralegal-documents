@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
 import {TextField, Typography, FormGroup, makeStyles, Button, Checkbox, FormControlLabel } from '@material-ui/core';
 import ReactQuill from "react-quill";

@@ -36,6 +36,7 @@ function Texto({setArreglo, arreglo,index, handleDelete}) {
             }
 
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleTitulo = e=>{

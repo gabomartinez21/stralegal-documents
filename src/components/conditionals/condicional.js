@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react'
 import {
     TextField,
@@ -257,7 +258,7 @@ function Condicional({setArreglo, arreglo, index, handleDelete, handleDuplicate,
     const handleDeleteModule = (indexMod, indexCond) => {
         const moduleTypeCopy = [...moduleType];
         const moduleCopy = moduleType[indexMod[0]].filter((mod, i) => i !== indexMod[1]);
-        const condicionalCopy = [...condicional];
+        // const condicionalCopy = [...condicional];
         moduleTypeCopy[indexMod[0]] = moduleCopy;
         setModuleType(moduleTypeCopy)
         
@@ -370,6 +371,7 @@ function Condicional({setArreglo, arreglo, index, handleDelete, handleDuplicate,
                                         handleDelete={handleDeleteModule}
                                     />
                                     }
+                                    return null;
                                 })
                             )}
                         </div>

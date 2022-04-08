@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react'
 import {
     TextField,
@@ -53,7 +54,6 @@ function Repetir({setArreglo, arreglo, index, handleDelete}) {
     ])
     const [moduleType, setModuleType] = useState([]);  
     const [firstTime, setFirstTime] = useState(true);
-    const [deleteActive, setDeleteActive] = useState(false);
 
     const handleVariable = (e) => {
         const newRepeticion = [...repeticion];
@@ -119,8 +119,6 @@ function Repetir({setArreglo, arreglo, index, handleDelete}) {
           }
         }
         setFirstTime(false)
-      }else{
-        setDeleteActive(false);
       }
     }, [moduleType])
     
@@ -181,7 +179,6 @@ function Repetir({setArreglo, arreglo, index, handleDelete}) {
         const repeticionCopy = repeticion.filter((mod, i) => i !== indexMod[0])
         setModuleType(moduleCopy)
         setRepeticion(repeticionCopy)
-        setDeleteActive(true)
     }
     return (
         <div>
@@ -249,6 +246,7 @@ function Repetir({setArreglo, arreglo, index, handleDelete}) {
                                     handleDelete={handleDeleteModule}
                                 />
                         }
+                        return null;
                     })
                 )}
             </div>
