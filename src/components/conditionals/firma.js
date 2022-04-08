@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
 function Firma({setArreglo, arreglo, index, modulo, handleDelete}) {
     const classes = useStyles();
     const [texto, setTexto] = useState();
-    const [variable, setVariable] = useState();
 
     useEffect(()=>{
         

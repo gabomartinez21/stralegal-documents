@@ -8,18 +8,20 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     boxInput:{
-        marginTop:theme.spacing(2),
-        '& p':{
-            margin:'10px 0',
-        }
+      border: "1px solid #dfdfdf",
+      borderRadius: 7,
+      padding: "9px 5px",
+      marginTop:theme.spacing(2),
+      '& p':{
+          margin:'10px 0',
+      }
     },
 }));
 function Texto({setArreglo, arreglo,index, handleDelete}) {
     const classes = useStyles();
     const [titulo, setTitulo] = useState('');
-
     useEffect(() => {
-        if(arreglo[index]){
+        if(arreglo[index[0]]){
             if(index.length > 1){
                 if(arreglo[index[0]][index[1]+1]){
                     setTitulo(arreglo[index[0]][index[1]+1].titulo);

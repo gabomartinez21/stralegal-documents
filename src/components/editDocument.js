@@ -1,17 +1,15 @@
-import React, {useState, useEffect, useContext} from 'react'
+/* eslint-disable array-callback-return */
+import React, {useState, useEffect} from 'react'
 import {
     Select,
     FormControl,
     MenuItem,
-    InputLabel,
     TextField,
     Typography,
     Button,
     FormGroup,
     makeStyles 
 } from '@material-ui/core';
-import DocumentContext from '../context/DocumentContext';
-import {DOCUMENT_ACTIONS} from '../context/DocumentProvider';
 import axios from 'axios';
 import {useParams} from 'react-router-dom';
 
@@ -19,9 +17,10 @@ import Texto from './conditionals/texto'
 import Condicional from './conditionals/condicional'
 import Titulo from './conditionals/titulo';
 import Firma from './conditionals/firma';
+import Repetir from './conditionals/repetir';
 
 import { useSnackbar } from 'notistack';
-import {URLSERVER,URLFRONT} from '../App';
+import {URLSERVER} from '../App';
 
 const useStyles = makeStyles((theme) => ({
     textInput: {
@@ -45,32 +44,29 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-// TODO mas firmas con el nomnbre de la persona para accionistas
-
 function EditDocument() {
     const {id} = useParams();
     const classes = useStyles();
-    const [document, dispatch] = useContext(DocumentContext)
     const { enqueueSnackbar } = useSnackbar();
     const [titulo, setTitulo] = useState('');
     const [textoDocumento, setTextoDocumento] = useState([]);
     const [moduleType, setModuleType] = useState(['']);  
+    const [deleteActive, setDeleteActive] = useState(false);
 
     const getDocument = async () => {
         
         const res = await axios.get(`${URLSERVER}/admin/v1/documentos.php?documentos=${id}`);
-        console.log(res.data.body[0]);
         const tituloBD = res.data.body[0].titulo_doc;
         setTitulo(tituloBD);
         const textoDB = JSON.parse(res.data.body[0].texto_doc);
-
+        console.log(textoDB);
         setTextoDocumento(textoDB);
         const modulesDB = [];
         textoDB.forEach(module => {
             if(module.texto !== undefined) {
                 modulesDB.push('texto');
             }else if(module.condicion !== undefined) {
-                modulesDB.push('condicion');
+                modulesDB.push('condicional');
             }else if(module.titulo !== undefined) {
                 modulesDB.push("titulo");
             }else if(module.repetir !== undefined) {
@@ -83,39 +79,17 @@ function EditDocument() {
     }
     useEffect(()=>{
         getDocument();
-    },[])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
 
     useEffect(()=>{
-        if(moduleType[moduleType.length-1] === 'condicion'){
-            setTextoDocumento([...textoDocumento, {
-                condicion:[ 
-                    [{tituloCond:""}],
-                    [{tituloCond:""}]
-                ]
-            }])
+        if(!deleteActive){
 
+            
         }
-        if(moduleType[moduleType.length-1] === 'texto'){
-            setTextoDocumento([...textoDocumento, {
-                texto:''
-            }])
-        }
-        if(moduleType[moduleType.length-1] === 'firma'){
-            setTextoDocumento([...textoDocumento, {
-                firma:''
-            }])
-        }
-        if(moduleType[moduleType.length-1] === 'repetir'){
-            setTextoDocumento([...textoDocumento, {
-                repetir:''
-            }])
-        }
-        if(moduleType[moduleType.length-1] === 'titulo'){
-            setTextoDocumento([...textoDocumento, {
-                titulo:''
-            }])
-        }
+        setDeleteActive(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [moduleType])
 
     const enviarDatos = async (data) => {
@@ -125,7 +99,9 @@ function EditDocument() {
             'texto_doc':JSON.stringify(data.textoDocumento),
             'type':'actualizar'
         }
+        console.log(body)
         const res = await axios.post(`${URLSERVER}/admin/v1/documentos.php`, JSON.stringify(body))
+        console.log(res)
         if(res.data.ok){
             enqueueSnackbar('Tu documento se actualizo satisfactoriamente', { 
                 variant: 'success',
@@ -139,19 +115,71 @@ function EditDocument() {
     }
 
     const handleDeleteModule = (indexMod) => {
-        const moduleCopy = moduleType.filter((mod, i) => i !== indexMod);
+        const moduleCopy = moduleType.filter((mod, i) => i !== indexMod[0]);
+        const textoCopy = textoDocumento.filter((text, i) => i !== indexMod[0]);      
+ 
+        setDeleteActive(true)
         setModuleType(moduleCopy);   
+        setTextoDocumento(textoCopy); 
+    }
+
+    const handleDuplicate = (index) => {
+        const moduleCopy = [...moduleType];
+        const textoDocumentoCopy = [...textoDocumento];
+        const newModule = [];
+        const newTextoDocumento = [];
+        moduleCopy.forEach((mod, i) => {
+            if(i === index[0]){
+                newModule.push(mod)
+                newModule.push(mod)
+            }else{
+                newModule.push(mod)
+            }
+        })
+        textoDocumentoCopy.forEach((textoDoc, i) => {
+            if(i === index[0]){
+                newTextoDocumento.push(textoDoc)
+                newTextoDocumento.push(textoDoc)
+                
+            }else{
+                newTextoDocumento.push(textoDoc)
+            }
+        })
+        
+        setDeleteActive(true);
+        setModuleType(newModule);
+        setTextoDocumento(newTextoDocumento)
+    }
+    const handleAddModule = (e) => {
+        setModuleType([...moduleType, e.target.value]);
+        if(e.target.value === 'condicional'){
+            setTextoDocumento([...textoDocumento, {
+                condicion:[ 
+                    [{tituloCond:""}],
+                    [{tituloCond:""}]
+                ]
+            }])
+
+        }
+        if(e.target.value === 'texto'){
+            setTextoDocumento([...textoDocumento, {
+                texto:'', checked: false
+            }])
+        }
+        if(e.target.value === 'firma'){
+            setTextoDocumento([...textoDocumento, {
+                firma:''
+            }])
+        }
+        if(e.target.value === 'titulo'){
+            setTextoDocumento([...textoDocumento, {
+                titulo:''
+            }])
+        }
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch({
-            type:DOCUMENT_ACTIONS.AGREGAR_TODO,
-            payload:{
-                titulo,
-                textoDocumento
-            }
-        })
 
         enviarDatos({
             titulo,
@@ -182,13 +210,13 @@ function EditDocument() {
                 <div className="condicionales">
                     {React.Children.toArray(
                         moduleType.map((type, index) => {
-                            if(type === 'condicion'){
-                                
+                            if(type === 'condicional'){
                                 return  <Condicional 
                                             setArreglo={setTextoDocumento} 
                                             arreglo={textoDocumento}
                                             index={[index]}
                                             handleDelete={handleDeleteModule}
+                                            handleDuplicate={handleDuplicate}
                                         />
                             }
                             if(type === 'titulo'){
@@ -208,13 +236,12 @@ function EditDocument() {
                                         />
                             }
                             if(type === 'repetir'){
-                                return <Texto
-                                            setArreglo={setTextoDocumento} 
-                                            arreglo={textoDocumento}
-                                            index={[index]}
-                                            modulo="repetir"
-                                            handleDelete={handleDeleteModule}
-                                        />
+                                return <Repetir
+                                    setArreglo={setTextoDocumento} 
+                                    arreglo={textoDocumento}
+                                    index={[index]}
+                                    handleDelete={handleDeleteModule}
+                                />
                             }
                             if(type === 'firma'){
                                 return <Firma
@@ -232,12 +259,12 @@ function EditDocument() {
                         <p>Agregar los elementos necesarios para el documento</p>
                         <Select
                             id="simple-select"
-                            value={moduleType[moduleType.length-1]}
+                            value=""
                             variant="outlined"
-                            onChange={e => setModuleType([...moduleType, e.target.value])}
+                            onChange={e => handleAddModule(e)}
                         >
                             <MenuItem value="" disabled>Agregar modulo</MenuItem>
-                            <MenuItem value="condicion">Condicional</MenuItem>
+                            <MenuItem value="condicional">Condicional</MenuItem>
                             <MenuItem value="texto">Texto</MenuItem>
                             <MenuItem value="titulo">Titulo Documento</MenuItem>
                             <MenuItem value="repetir">Modulo de repetición</MenuItem>
@@ -257,3 +284,5 @@ function EditDocument() {
 }
 
 export default EditDocument
+
+

@@ -15,7 +15,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
-import {URLSERVER,URLFRONT} from '../App';
+import {URLSERVER} from '../App';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -53,7 +53,7 @@ function CreateVariables() {
     const [inputFields, setInputFields] = useState([
         {
             tituloBloque:'',
-            bloque:[{ variable: '', descripcion: '', tipo:''}],
+            bloque:[{ variable: '', descripcion: '', tipo:'texto'}],
             condicion:'no'
         }
     ]);
@@ -101,7 +101,11 @@ function CreateVariables() {
                 values[index].bloque[j].condicion= ''
             }else if(event.target.value === 'opcion' || event.target.value === 'multiple' || event.target.value === 'repetitivo'){
                 if(values[index].bloque[j].condicion !== undefined)  delete values[index].bloque[j].condicion
-                values[index].bloque[j].opciones= [{}]
+                values[index].bloque[j].opciones= [{
+                  variable:'',
+                  descripcion: '',
+                  tipo:'variable'
+                }]
             }else{
                 if(values[index].bloque[j].condicion !== undefined)  delete values[index].bloque[j].condicion
                 if(values[index].bloque[j].opciones !== undefined)  delete values[index].bloque[j].opciones
@@ -110,15 +114,15 @@ function CreateVariables() {
         setInputFields(values);
     }
 
-    const handleAddFields = (index) => {
+    const handleAddFields = (index, j) => {
         const newInputs = [...inputFields];
-        newInputs[index].bloque.push({ variable: '', descripcion: '', tipo:'texto' })
+        newInputs[index].bloque.splice(j+1 ,0,{ variable: '', descripcion: '', tipo:'texto' });
         setInputFields(newInputs);
     }
     const handleAddBloque = () => {
         setInputFields([...inputFields, {
             tituloBloque:'',
-            bloque:[{ variable: '', descripcion: '', tipo:'variable'}]
+            bloque:[{ variable: '', descripcion: '', tipo:'texto'}]
         }]);
     }
     
@@ -176,7 +180,8 @@ function CreateVariables() {
                             value={inputField.tituloBloque}
                         />
                         {inputField.bloque.map((vars, j) => (
-                            <>
+                            
+                            <div>
                             <TextField
                                 name="variable"
                                 label="Variable"
@@ -217,6 +222,7 @@ function CreateVariables() {
                                         <MenuItem value="multiple">Multiple</MenuItem>
                                         <MenuItem value="condicional">Condición</MenuItem>
                                         <MenuItem value="repetitivo">Repetitivo</MenuItem>
+                                        <MenuItem value="explicacion">Explicación</MenuItem>
                                     </Select>
                                 </FormControl>
                                 <IconButton
@@ -225,7 +231,7 @@ function CreateVariables() {
                                     <RemoveIcon />
                                 </IconButton>
                                 <IconButton 
-                                    onClick={() => handleAddFields(index)}
+                                    onClick={() => handleAddFields(index, j)}
                                 >
                                     <AddIcon />
                                 </IconButton>
@@ -238,7 +244,7 @@ function CreateVariables() {
                                         pos={i}
                                     />
                                 ))}
-                            </>
+                            </div>
                         ))}
                         <FormControl className="condicion-bloque">
                             <InputLabel id="tipo">Condicion</InputLabel>

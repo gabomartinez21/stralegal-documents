@@ -17,6 +17,7 @@ import Texto from './conditionals/texto'
 import Condicional from './conditionals/condicional'
 import Titulo from './conditionals/titulo'
 import Firma from './conditionals/firma'
+import Repetir from './conditionals/repetir';
 import { useSnackbar } from 'notistack';
 
 import {URLSERVER} from '../App';
@@ -69,7 +70,7 @@ function CreateDocument() {
             }
             if(moduleType[moduleType.length-1] === 'texto'){
                 setTextoDocumento([...textoDocumento, {
-                    texto:''
+                    texto:'', checked: false
                 }])
             }
             if(moduleType[moduleType.length-1] === 'firma'){
@@ -79,8 +80,9 @@ function CreateDocument() {
             }
             if(moduleType[moduleType.length-1] === 'repetir'){
                 setTextoDocumento([...textoDocumento, {
-                    repetir:'',
-                    variable:'',
+                    repetir:[{
+                        variable:''
+                    }]
                 }])
             }
             if(moduleType[moduleType.length-1] === 'titulo'){
@@ -117,12 +119,12 @@ function CreateDocument() {
             if(i === index[0]){
                 newTextoDocumento.push(textoDoc)
                 newTextoDocumento.push(textoDoc)
-                console.log(newTextoDocumento);
+                
             }else{
                 newTextoDocumento.push(textoDoc)
             }
         })
-        console.log(newTextoDocumento)
+        
         setDeleteActive(true);
         setModuleType(newModule);
         setTextoDocumento(newTextoDocumento)
@@ -135,7 +137,6 @@ function CreateDocument() {
             'texto_doc':JSON.stringify(data.textoDocumento),
             'type':'guardar'
         }
-        console.log(body)
         const res = await axios.post(`${URLSERVER}/admin/v1/documentos.php`, JSON.stringify(body))
 
         if(res.data.ok){
@@ -152,13 +153,6 @@ function CreateDocument() {
     
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch({
-            type:DOCUMENT_ACTIONS.AGREGAR_TODO,
-            payload:{
-                titulo,
-                textoDocumento
-            }
-        })
 
         enviarDatos({
             titulo,
@@ -215,11 +209,10 @@ function CreateDocument() {
                                     />
                             }
                             if(type === 'repetir'){
-                                return <Texto
+                                return <Repetir
                                         setArreglo={setTextoDocumento} 
                                         arreglo={textoDocumento}
                                         index={[index]}
-                                        modulo="repetir"
                                         handleDelete={handleDeleteModule}
                                     />
                             }

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, {useState, useEffect} from 'react'
 import {
     TextField,
     Typography,
@@ -14,6 +14,8 @@ import {
 } from '@material-ui/core';
 import Texto from './texto'
 import Titulo from './titulo'
+import Firma from './firma'
+import Repetir from './repetir'
 
 const useStyles = makeStyles((theme) => ({
     accordion:{
@@ -36,10 +38,13 @@ const useStyles = makeStyles((theme) => ({
         maxWidth: '400px'
     },
     boxInput:{
-        marginTop:theme.spacing(2),
-        '& p':{
-            margin:'10px 0',
-        }
+      border: "1px solid #dfdfdf",
+      borderRadius: 7,
+      padding: "9px 5px",
+      marginTop:theme.spacing(2),
+      '& p':{
+        margin:'10px 0',
+      }
     },
 }));
 function Condicional({setArreglo, arreglo, index, handleDelete, handleDuplicate, moduleParent, setModuleParent}) {
@@ -52,7 +57,9 @@ function Condicional({setArreglo, arreglo, index, handleDelete, handleDuplicate,
     ])
     const [firstTime, setFirstTime] = useState(true);
     const [deleteActive, setDeleteActive] = useState(false);
-
+    // console.log(condicional)
+    
+    // console.log(index)
     useEffect(() => {
 
         if(firstTime){
@@ -61,33 +68,33 @@ function Condicional({setArreglo, arreglo, index, handleDelete, handleDuplicate,
                 if(index.length > 1){
                     if(arreglo[index[0]][index[1]+1]){
                         setCondicional(arreglo[index[0]][index[1]+1].condicion);
-                        
                     }else{
                         setCondicional(arreglo[index[0]][index[1]].condicion);
-
                     }
                 }else{
-                    setCondicional(arreglo[index].condicion);
+                    setCondicional(arreglo[index[0]].condicion);
                 }
             }
             setFirstTime(false)
         }else{
-            const copyTextoDocumento = [...arreglo];
-            if(index.length > 1){
-                if(arreglo[index[0]][index[1]+1]){
-                    copyTextoDocumento[index[0]][index[1]+1].condicion = condicional
+            if(!deleteActive){
+                const copyTextoDocumento = [...arreglo];
+                if(index.length > 1){
+                    if(arreglo[index[0]][index[1]+1]){
+                        copyTextoDocumento[index[0]][index[1]+1].condicion = condicional
+                    }else{
+                        copyTextoDocumento[index[0]][index[1]].condicion = condicional
+                    }
+                    
                 }else{
-                    copyTextoDocumento[index[0]][index[1]].condicion = condicional
+                    
+                    if(copyTextoDocumento[index[0]]){
+                        copyTextoDocumento[index[0]].condicion = condicional
+                    }
                 }
-                
-            }else{
-                
-                if(copyTextoDocumento[index[0]]){
-                    copyTextoDocumento[index[0]].condicion = condicional
-                }
+                setArreglo(copyTextoDocumento)
             }
-            
-            setArreglo(copyTextoDocumento)
+            setDeleteActive(false);
         }
     }, [condicional]);
     
@@ -113,25 +120,29 @@ function Condicional({setArreglo, arreglo, index, handleDelete, handleDuplicate,
                     modulesNew.push(modulesDB)
                 })
                 setModuleType(modulesNew);
-    
+                
             }else{
-                arreglo[index[0]][index[1]].condicion.forEach((module) => {
-                    const modulesDB = [];
-                    module.forEach((random) => {
-                        if(random.texto !== undefined) {
-                            modulesDB.push('texto');
-                        }else if(random.condicion !== undefined) {
-                            modulesDB.push('condicion');
-                        }else if(random.titulo !== undefined) {
-                            modulesDB.push("titulo");
-                        }else if(random.repetir !== undefined) {
-                            modulesDB.push('repetir');
-                        }
-        
+                
+                if(arreglo[index[0]][index[1]].condicion !== undefined){
+                    arreglo[index[0]][index[1]].condicion.forEach((module) => {
+                        const modulesDB = [];
+                        module.forEach((random) => {
+                            if(random.texto !== undefined) {
+                                modulesDB.push('texto');
+                            }else if(random.condicion !== undefined) {
+                                modulesDB.push('condicion');
+                            }else if(random.titulo !== undefined) {
+                                modulesDB.push("titulo");
+                            }else if(random.repetir !== undefined) {
+                                modulesDB.push('repetir');
+                            }
+            
+                        })
+                        modulesNew.push(modulesDB)
                     })
-                    modulesNew.push(modulesDB)
-                })
-                setModuleType(modulesNew);
+                    setModuleType(modulesNew);
+
+                }
             }
         }else{
             if(arreglo[index[0]] && arreglo[index[0]].condicion !== undefined){
@@ -166,14 +177,16 @@ function Condicional({setArreglo, arreglo, index, handleDelete, handleDuplicate,
         switch(type){
             case 'texto':
                 modulo = [...condicional[pos]]
-                modulo.push({texto:''});
+                modulo.push({texto:'', checked: false});
                 const condicionTexto = [...condicional]
                 condicionTexto[pos]=modulo;
                 setCondicional(condicionTexto)
                 break;
             case 'repetir':
                 modulo = [...condicional[pos]]
-                modulo.push({repetir:''});
+                modulo.push({repetir:[{
+                    variable:''
+                }]});
                 const condicionRepetir = [...condicional]
                 condicionRepetir[pos]=modulo;
                 setCondicional(condicionRepetir)
@@ -210,6 +223,8 @@ function Condicional({setArreglo, arreglo, index, handleDelete, handleDuplicate,
                 condicionCondicion[pos]=modulo;
                 setCondicional(condicionCondicion)
                 break;
+            default: 
+                break;
         }
     }
 
@@ -239,9 +254,10 @@ function Condicional({setArreglo, arreglo, index, handleDelete, handleDuplicate,
         setModuleType(moduleCopy)
     }
 
-    const handleDeleteModule = (indexMod) => {
+    const handleDeleteModule = (indexMod, indexCond) => {
         const moduleTypeCopy = [...moduleType];
         const moduleCopy = moduleType[indexMod[0]].filter((mod, i) => i !== indexMod[1]);
+        const condicionalCopy = [...condicional];
         moduleTypeCopy[indexMod[0]] = moduleCopy;
         setModuleType(moduleTypeCopy)
         
@@ -284,7 +300,7 @@ function Condicional({setArreglo, arreglo, index, handleDelete, handleDuplicate,
                         <Typography>Condicion {i+1}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <div class="row">
+                        <div className="row">
                             <FormGroup className={classes.boxInput}>
                                 <Typography variante="h3">Variable Condición</Typography>
                                 <TextField 
@@ -330,13 +346,12 @@ function Condicional({setArreglo, arreglo, index, handleDelete, handleDuplicate,
                                             />
                                     }
                                     if(type === 'repetir'){
-                                        return <Texto
-                                                setArreglo={setCondicional} 
-                                                arreglo={condicional}
-                                                index={[i,indexC]}
-                                                modulo="repetir"
-                                                handleDelete={handleDeleteModule}
-                                            />
+                                        return <Repetir
+                                            setArreglo={setCondicional} 
+                                            arreglo={condicional}
+                                            index={[i,indexC]}
+                                            handleDelete={handleDeleteModule}
+                                        />
                                     }
                                     if(type === 'socio'){
                                         return <Texto
@@ -348,13 +363,12 @@ function Condicional({setArreglo, arreglo, index, handleDelete, handleDuplicate,
                                             />
                                     }
                                     if(type === 'firma'){
-                                        return <Texto
-                                                setArreglo={setCondicional} 
-                                                arreglo={condicional}
-                                                index={[i,indexC]}
-                                                modulo="socio"
-                                                handleDelete={handleDeleteModule}
-                                            />
+                                        return <Firma
+                                        setArreglo={setCondicional} 
+                                        arreglo={condicional}
+                                        index={[i,indexC]}
+                                        handleDelete={handleDeleteModule}
+                                    />
                                     }
                                 })
                             )}
@@ -380,7 +394,7 @@ function Condicional({setArreglo, arreglo, index, handleDelete, handleDuplicate,
                         <Button
                             onClick={() => handleDeleteCondition(i)}
                             variant="filled"
-                            style={{"margin-top":"20px", "background":"red", "color":"#fff"}}
+                            style={{marginTop:"20px", background:"red", color:"#fff"}}
                         >
                             Eliminar
                         </Button>
@@ -391,7 +405,7 @@ function Condicional({setArreglo, arreglo, index, handleDelete, handleDuplicate,
             <Button
                 onClick={handleAddCondition}
                 variant="outlined"
-                style={{"margin-top":"20px", "border":"1px solid #1c739c", "color":"#1c739c"}}
+                style={{marginTop:"20px", border:"1px solid #1c739c", color:"#1c739c"}}
             >
                 Agregar Condicion
             </Button>
@@ -418,5 +432,3 @@ function Condicional({setArreglo, arreglo, index, handleDelete, handleDuplicate,
 }
 
 export default Condicional
-
-

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {TextField, Typography, FormGroup, makeStyles, Button } from '@material-ui/core';
-
+import {TextField, Typography, FormGroup, makeStyles, Button, Checkbox, FormControlLabel } from '@material-ui/core';
+import ReactQuill from "react-quill";
 const useStyles = makeStyles((theme) => ({
     textInput: {
         '& input':{
@@ -8,64 +8,52 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     boxInput:{
-        marginTop:theme.spacing(2),
-        '& p':{
-            margin:'10px 0',
-        }
+      border: "1px solid #dfdfdf",
+      borderRadius: 7,
+      padding: "9px 5px",
+      marginTop:theme.spacing(2),
+      '& p':{
+          margin:'10px 0',
+      }
     },
 }));
 function Texto({setArreglo, arreglo, index, modulo, handleDelete}) {
     const classes = useStyles();
-    const [texto, setTexto] = useState();
+    const [texto, setTexto] = useState('');
     const [variable, setVariable] = useState();
-
+    const [check, setCheck] = useState(false);
+    
     useEffect(()=>{
-        
-        if(arreglo[index[0]]){
-            if(modulo === 'socio'){
-                if(index.length > 1){
-                    if(arreglo[index[0]][index[1]+1]){
-                        setTexto(arreglo[index[0]][index[1]+1].socio);    
-                        setVariable(arreglo[index[0]][index[1]+1].variable);
-                    }else{
-                        setTexto(arreglo[index[0]][index[1]].socio);    
-                        setVariable(arreglo[index[0]][index[1]].variable);    
-
-                    }
-                }else{
-                    setTexto(arreglo[index[0]].socio);    
-                    setVariable(arreglo[index[0]].variable)    
-                }
-            }else if(modulo === 'repetir'){
-                if(index.length > 1){
-                    if(arreglo[index[0]][index[1]+1]){
-                        setTexto(arreglo[index[0]][index[1]+1].repetir);    
-                        setVariable(arreglo[index[0]][index[1]+1].variable);
-                    }else{
-                        setTexto(arreglo[index[0]][index[1]].repetir);    
-                        setVariable(arreglo[index[0]][index[1]].variable);    
-
-                    }
-                }else{
-                    setTexto(arreglo[index[0]].repetir);    
-                    setVariable(arreglo[index[0]].variable)    
-                }
+      if(arreglo[index[0]]){
+        if(modulo === 'socio'){
+          if(index.length > 1){
+            if(arreglo[index[0]][index[1]+1]){
+              setTexto(arreglo[index[0]][index[1]+1].socio);    
+              setVariable(arreglo[index[0]][index[1]+1].variable);
             }else{
-                if(index.length > 1){
-                    if(arreglo[index[0]][index[1]+1]){
-                        setTexto(arreglo[index[0]][index[1]+1].texto);
-                        
-                    }else{
-                        setTexto(arreglo[index[0]][index[1]].texto);
-
-                    }
-                }else{
-                    setTexto(arreglo[index[0]].texto);
-                }
+              setTexto(arreglo[index[0]][index[1]].socio);    
+              setVariable(arreglo[index[0]][index[1]].variable);    
             }
-
+          }else{
+            setTexto(arreglo[index[0]].socio);    
+            setVariable(arreglo[index[0]].variable)    
+          }
+        }else{
+          if(index.length > 1){
+            if(arreglo[index[0]][index[1]+1]){
+              setTexto(arreglo[index[0]][index[1]+1].texto);
+              setCheck(arreglo[index[0]][index[1]+1].checked);
+            }else{
+              setTexto(arreglo[index[0]][index[1]].texto);
+              setCheck(arreglo[index[0]][index[1]].checked);
+              
+            }
+          }else{
+            setTexto(arreglo[index[0]].texto);
+            setCheck(arreglo[index[0]].checked);
+          }
         }
-        
+      }
     }, []);
 
     const handleVariable = e => {
@@ -85,55 +73,54 @@ function Texto({setArreglo, arreglo, index, modulo, handleDelete}) {
         setArreglo(valores)
     }
 
-    const handleText = e=>{
+    const handleText = value =>{
         const valores = [...arreglo];
-        if(modulo === 'repetir'){
-            if(index.length > 1){
-                if(arreglo[index[0]][index[1]+1]){
-                    valores[index[0]][index[1]+1].repetir = e.target.value;
-                }else{
-                    valores[index[0]][index[1]].repetir = e.target.value;
-                }
+        if(modulo === 'socio'){
+          if(index.length > 1){
+            if(arreglo[index[0]][index[1]+1]){
+              valores[index[0]][index[1]+1].socio = value;
             }else{
-                valores[index[0]].repetir = e.target.value;
+              valores[index[0]][index[1]].socio = value;
             }
-        }else if(modulo === 'socio'){
-            if(index.length > 1){
-                if(arreglo[index[0]][index[1]+1]){
-                    valores[index[0]][index[1]+1].socio = e.target.value;
-                }else{
-                    valores[index[0]][index[1]].socio = e.target.value;
-
-                }
-    
-            }else{
-                valores[index[0]].socio = e.target.value;
-    
-            }
-
+          }else{
+            valores[index[0]].socio = value;
+          }
         }else{
-            if(index.length > 1){
-                if(arreglo[index[0]][index[1]+1]){
-                    valores[index[0]][index[1]+1].texto = e.target.value;
-                }else{
-                    valores[index[0]][index[1]].texto = e.target.value;
-                }
-    
+          if(index.length > 1){
+            if(arreglo[index[0]][index[1]+1]){
+              valores[index[0]][index[1]+1].texto = value;
             }else{
-                valores[index[0]].texto = e.target.value;
-    
+              valores[index[0]][index[1]].texto = value;
             }
-
+          }else{
+            console.log(valores[index[0]])
+            valores[index[0]].texto = value;
+          }
         }
-        setTexto(e.target.value);
+        setTexto(value);
         setArreglo(valores)
     }
-    
+    const handleChange = () => {
+      setCheck(!check);
+      const valores = [...arreglo];
+      if(index.length > 1){
+        if(arreglo[index[0]][index[1]+1]){
+            valores[index[0]][index[1]+1].checked = !check;
+        }else{
+            valores[index[0]][index[1]].checked = !check;
+        }
+
+      }else{
+          valores[index[0]].checked = !check;
+
+      }
+      setArreglo(valores)
+    }
     return (
         <div>
             <FormGroup className={classes.boxInput}>
                 <Button onClick={() => handleDelete(index)} variante="outlined" className="btnEliminar">X</Button>
-                {(modulo === 'repetir' || modulo === 'socio') && (
+                {(modulo === 'socio') && (
                     <TextField 
                         id="textoBase"
                         variant="outlined"
@@ -148,15 +135,20 @@ function Texto({setArreglo, arreglo, index, modulo, handleDelete}) {
                 {modulo === 'socio' && (
                     <Typography variante="body2">Este modulo sirve para replicar diferentes socios y sus firmas</Typography>
                 )}
-                <TextField 
-                    id="textoBase"
-                    variant="outlined"
-                    rows={6}
-                    name="texto"
-                    value={texto}
-                    multiline
-                    onChange={handleText}
+                <ReactQuill
+                  theme="snow"
+                  value={texto}
+                  onChange={handleText}
+                  style={{minHeight:"300px", display: "grid",
+                  gridTemplateRows: "42px auto"}}
                 />
+                <div>
+                  <FormControlLabel
+                    control={<Checkbox checked={check} onChange={handleChange} name="checkedA" />}
+                    label="Unir con parrafo superior"
+                  />
+                  
+                </div>
 
             </FormGroup>
         </div>

@@ -15,8 +15,9 @@ function Opcion({setArray, array, index, bloque, pos}) {
     const [opcion, setOpcion] = useState({
         variable:'',
         descripcion: '',
-        type:'variable',
+        tipo:'variable',
     })
+
     const [firstTime, setFirstTime] = useState(true);
     
     useEffect(()=>{
@@ -48,21 +49,42 @@ function Opcion({setArray, array, index, bloque, pos}) {
             newOpcion.condicion = '';
         }
         if(e.target.value === 'opciones'){
-            newOpcion.opciones = [{}];
+            newOpcion.opciones = [{
+                variable:'',
+                descripcion: '',
+                tipo:'variable',
+            }];
         }
         setOpcion(newOpcion);    
-    }  
+    };
+
 
     const handleAddFieldsOpt = () => {   
-        const newOpcion = [...array];
-        newOpcion[index].bloque[bloque].opciones.push({ variable: '', descripcion: '', type:'variable'});
-        setArray(newOpcion)
+        if(bloque !== undefined){
+            const newOpcion = [...array];
+            newOpcion[index].bloque[bloque].opciones.push({ variable: '', descripcion: '', tipo:'variable'});
+            
+            setArray(newOpcion)
+        }else{
+            const newOpcion = {...array};
+            newOpcion.opciones.push({ variable: '', descripcion: '', tipo:'variable'});
+            
+            setArray(newOpcion)
+        }
     }
     
     const handleRemoveFieldsOpt = () => {
-        const newOpcion = [...array];
-        newOpcion[index].bloque[bloque].opciones.splice(pos,1);
-        setArray(newOpcion);
+        if(index !== undefined){
+            const newOpcion = [...array];
+            newOpcion[index].bloque[bloque].opciones.splice(pos,1);
+            
+            setArray(newOpcion);
+        }else{
+            const newOpcion = {...array};
+            newOpcion.opciones.splice(pos,1);
+
+            setArray(newOpcion);
+        }
     }
 
     return (
@@ -83,7 +105,7 @@ function Opcion({setArray, array, index, bloque, pos}) {
                 onChange={event => handleChangeInputOption(event)}
             />
             
-            {opcion.type === 'condicion' && (
+            {opcion.tipo === 'condicion' && (
                 <TextField
                     name="condicion"
                     label="Condicion"
@@ -98,15 +120,16 @@ function Opcion({setArray, array, index, bloque, pos}) {
                 <Select 
                     labelId="tipo"
                     id="tipo"
-                    name="type"
+                    name="tipo"
                     defaultValue="variable"
-                    value={opcion.type}
+                    value={opcion.tipo}
                     onChange={e => handleChangeInputOption(e)}
                 >
                     <MenuItem value="variable">Variable</MenuItem>
                     <MenuItem value="seleccion">Selección</MenuItem>
                     <MenuItem value="opcion">Opción única</MenuItem>
                     <MenuItem value="opciones">Opciones</MenuItem>
+                    <MenuItem value="firma">Firma</MenuItem>
                     <MenuItem value="condicion">Condición</MenuItem>
                 </Select>
             </FormControl>
@@ -120,7 +143,7 @@ function Opcion({setArray, array, index, bloque, pos}) {
             >
                 <AddIcon />
             </IconButton>
-            {opcion.type === 'opciones' && opcion.opciones.map((op, i) => (
+            {opcion.tipo === 'opciones' && opcion.opciones.map((op, i) => (
                 <Opcion
                     setArray={setOpcion}
                     array={opcion}

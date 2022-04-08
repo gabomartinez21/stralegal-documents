@@ -27,16 +27,17 @@ function ListDocuments() {
         history.push(`/editar-documento/${id}`)
 
     }
-    const handleDelete = async (id) =>{
+    const handleDelete = async (id, idVariables) =>{
         
         const data = {
             "type":"eliminar",
-            "id":id
+            "id":id,
+            "idVar":idVariables,
         }
         const newDocs = documents.filter(documento => documento.id_doc !== id);
         
         const res = await axios.post(`${URLSERVER}/admin/v1/documentos.php`, JSON.stringify(data));
-        
+        console.log(res)
         if(res.data.ok){
             setDocuments(newDocs);
             enqueueSnackbar('Documento eliminado', { 
@@ -85,10 +86,10 @@ function ListDocuments() {
                                 <span>{document.fecha_c}</span>
                             </TableCell>
                             <TableCell className="centerTable">
-                                <Button className="btn-edit" onClick={() => handleEdit(document.id_doc)}>
+                                <Button className="btn-edit" onClick={() => handleEdit(document.id_doc,)}>
                                     <CreateIcon/>
                                 </Button>
-                                <Button className="btn-delete" onClick={() => handleDelete(document.id_doc)}>
+                                <Button className="btn-delete" onClick={() => handleDelete(document.id_doc, document.id_variables)}>
                                     <DeleteOutlineOutlinedIcon/>
                                 </Button>
                             </TableCell>

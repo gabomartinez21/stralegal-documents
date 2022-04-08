@@ -96,8 +96,6 @@ function EditVariables() {
         }
 
     }
-
-    console.log('array: ', inputFields);
     
     const handleChangeInput = (index, j,event) => {
         const values = [...inputFields];
@@ -108,7 +106,11 @@ function EditVariables() {
                 values[index].bloque[j].condicion= ''
             }else if(event.target.value === 'opcion' || event.target.value === 'multiple' || event.target.value === 'repetitivo'){
                 if(values[index].bloque[j].condicion !== undefined)  delete values[index].bloque[j].condicion
-                values[index].bloque[j].opciones= [{}]
+                values[index].bloque[j].opciones= [{
+                  variable:'',
+                  descripcion: '',
+                  tipo:'variable'
+                }];
             }else{
                 if(values[index].bloque[j].condicion !== undefined)  delete values[index].bloque[j].condicion
                 if(values[index].bloque[j].opciones !== undefined)  delete values[index].bloque[j].opciones
@@ -117,15 +119,15 @@ function EditVariables() {
         setInputFields(values);
     }
 
-    const handleAddFields = (index) => {
-        const newInputs = [...inputFields];
-        newInputs[index].bloque.push({ variable: '', descripcion: '', tipo:'texto' })
-        setInputFields(newInputs);
+    const handleAddFields = (index, j) => {
+      const newInputs = [...inputFields];
+      newInputs[index].bloque.splice(j+1 ,0,{ variable: '', descripcion: '', tipo:'texto' });
+      setInputFields(newInputs);
     }
     const handleAddBloque = () => {
         setInputFields([...inputFields, {
             tituloBloque:'',
-            bloque:[{ variable: '', descripcion: '', tipo:''}]
+            bloque:[{ variable: '', descripcion: '', tipo:'texto'}]
         }]);
     }
     
@@ -173,32 +175,31 @@ function EditVariables() {
                             value={inputField.tituloBloque}
                         />
                         {inputField.bloque.map((vars, j) => (
-                            <>
-                            <TextField
-                                name="variable"
-                                label="Variable"
-                                variant="filled"
-                                value={vars.variable}
-                                onChange={event => handleChangeInput(index, j, event )}
-                            />
-                            <TextField
-                                name="descripcion"
-                                label="Descripcion"
-                                variant="filled"
-                                value={vars.descripcion}
-                                onChange={event => handleChangeInput(index, j, event )}
-                            />
-                            {vars.condicion !== undefined && (
+                            <div>
                                 <TextField
-                                    name="condicion"
-                                    label="Condicion"
+                                    name="variable"
+                                    label="Variable"
                                     variant="filled"
-                                    value={vars.condicion}
+                                    value={vars.variable}
                                     onChange={event => handleChangeInput(index, j, event )}
-                                    helperText="Introduce la variable por la que se mostrará esta pregunta"
                                 />
-                            )}
-
+                                <TextField
+                                    name="descripcion"
+                                    label="Descripcion"
+                                    variant="filled"
+                                    value={vars.descripcion}
+                                    onChange={event => handleChangeInput(index, j, event )}
+                                />
+                                {vars.condicion !== undefined && (
+                                    <TextField
+                                        name="condicion"
+                                        label="Condicion"
+                                        variant="filled"
+                                        value={vars.condicion}
+                                        onChange={event => handleChangeInput(index, j, event )}
+                                        helperText="Introduce la variable por la que se mostrará esta pregunta"
+                                    />
+                                )}
                                 <FormControl>
                                     <InputLabel id="tipo">Tipo</InputLabel>
                                     <Select 
@@ -206,7 +207,7 @@ function EditVariables() {
                                         id="tipo"
                                         name="tipo"
                                         defaultValue="texto"
-                                        value={inputField.type}
+                                        value={vars.tipo}
                                         onChange={e => handleChangeInput(index, j, e)}
                                     >
                                         <MenuItem value="texto">Texto</MenuItem>
@@ -214,6 +215,8 @@ function EditVariables() {
                                         <MenuItem value="multiple">Multiple</MenuItem>
                                         <MenuItem value="condicional">Condición</MenuItem>
                                         <MenuItem value="repetitivo">Repetitivo</MenuItem>
+                                        <MenuItem value="firma">Firma</MenuItem>
+                                        <MenuItem value="explicacion">Explicación</MenuItem>
                                     </Select>
                                 </FormControl>
                                 <IconButton
@@ -222,7 +225,7 @@ function EditVariables() {
                                     <RemoveIcon />
                                 </IconButton>
                                 <IconButton 
-                                    onClick={() => handleAddFields(index)}
+                                    onClick={() => handleAddFields(index, j)}
                                 >
                                     <AddIcon />
                                 </IconButton>
@@ -235,7 +238,7 @@ function EditVariables() {
                                         pos={i}
                                     />
                                 ))}
-                            </>
+                            </div>
                         ))}
                         <FormControl fullwidth size="medium">
                             <InputLabel id="tipo">Condicion</InputLabel>
@@ -304,3 +307,5 @@ function EditVariables() {
 }
 
 export default EditVariables
+
+
