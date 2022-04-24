@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import {URLSERVER} from '../App';
+import {URLSERVER} from '../config';
 import {Container, Box, TextField, Grid, MenuItem, Select,InputLabel, FormControl, Button} from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import ReactQuill from "react-quill";

@@ -17,11 +17,7 @@ import Sidebar from './components/sidebar';
 import Dashboard from './components/dashboard';
 import {DocumentProvider} from './context/DocumentProvider';
 
-// const CASA = '192.168.18.35';
-const ANTO = '192.168.1.34';
-// const SUR = '192.168.1.20';
-export const URLSERVER = 'http://'+ANTO+'/starlegal';
-// export const URLSERVER = 'https://pandacode-ve.xyz/starlegal';
+import {URLSERVER} from './config';
 
 function App() {
 

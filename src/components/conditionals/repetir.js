@@ -10,6 +10,8 @@ import {
     Select ,
     Button,
 } from '@material-ui/core';
+import {ArrowDropUp, ArrowDropDown} from '@material-ui/icons';
+import styled from 'styled-components'
 import Texto from './texto';
 import Titulo from './titulo';
 import Condicional from './condicional';
@@ -20,8 +22,8 @@ const useStyles = makeStyles((theme) => ({
         "& .MuiAccordionDetails-root":{
             display:'block'
         },
-        "&.MuiAccordion-root.Mui-expanded:first-child":{
-            marginTop: "1.5rem",
+        "&.MuiAccordion-root.Mui-expanded":{
+            marginTop: "0",
 
         }
     },
@@ -44,7 +46,14 @@ const useStyles = makeStyles((theme) => ({
       }
     },
 }));
-function Repetir({setArreglo, arreglo, index, handleDelete}) {
+function Repetir({
+  setArreglo,
+  arreglo,
+  index,
+  handleDelete,
+  moveUp,
+  moveDown
+}) {
 
     const classes = useStyles();
     const [repeticion, setRepeticion] = useState([
@@ -59,6 +68,78 @@ function Repetir({setArreglo, arreglo, index, handleDelete}) {
         const newRepeticion = [...repeticion];
         newRepeticion[0].variable = e.target.value
         setRepeticion(newRepeticion)
+    }
+
+    const downPosition = (indexCod) => {
+      const moduleCopy = [...moduleType];
+      const textCopy = [...repeticion];
+
+      if(indexCod.length > 1){
+        const auxMod = moduleCopy[indexCod[0]][indexCod[1]+1];
+        const auxText = textCopy[indexCod[0]][indexCod[1]+2];
+        //cambio en el modulo
+        // moduleCopy[indexCod[0]][indexCod[1]+1] = moduleCopy[indexCod[0]][indexCod[1]] 
+        // moduleCopy[indexCod[0]][indexCod[1]] = auxMod;
+        // // cambio en el texto 
+        // textCopy[indexCod[0]][indexCod[1]+2] = textCopy[indexCod[0]][indexCod[1]+1] 
+        // textCopy[indexCod[0]][indexCod[1]+1] = auxText; 
+        // setModuleType(moduleCopy)
+        // setRepeticion(textCopy)
+
+      }else{
+        if(indexCod[0]+1 <= moduleCopy.length && indexCod[0]+1 <= textCopy.length){
+          const auxMod = moduleCopy[indexCod[0]];
+          const auxText = textCopy[indexCod[0]+1];
+          //cambio en el modulo
+          moduleCopy[indexCod[0]] = moduleCopy[indexCod[0]-1]
+          moduleCopy[indexCod[0]-1] = auxMod;
+          // cambio en el texto 
+          textCopy[indexCod[0]+1] = textCopy[indexCod[0]]
+          textCopy[indexCod[0]] = auxText; 
+
+          setModuleType(moduleCopy)
+          setRepeticion(textCopy)
+        }
+
+      }
+    }
+    const upPosition = (indexCod) => {
+      const moduleCopy = [...moduleType];
+      const textCopy = [...repeticion];
+      console.log(indexCod);
+      console.log(moduleCopy);
+      if(indexCod.length > 1){
+        if(indexCod[0]-1 >= 0){
+          const auxMod = moduleCopy[indexCod[0]][indexCod[1]-1];
+          const auxText = textCopy[indexCod[0]][indexCod[1]+1];
+          // cambio en el modulo
+          // moduleCopy[indexCod[0]][indexCod[1]-1] = moduleCopy[indexCod[0]][indexCod[1]]; 
+          // moduleCopy[indexCod[0]][indexCod[1]] = auxMod;
+          // // cambio en el texto 
+          // textCopy[indexCod[0]][indexCod[1]+1] = textCopy[indexCod[0]][indexCod[1]];
+          // textCopy[indexCod[0]][indexCod[1]] = auxText; 
+          
+          setModuleType(moduleCopy)
+          setRepeticion(textCopy)
+        }
+      }else{
+        if(indexCod[0]-1 > 0){
+          const auxMod = moduleCopy[indexCod[0]-2];
+          const auxText = textCopy[indexCod[0]-1];
+          // cambio en el modulo
+          moduleCopy[indexCod[0]-2] = moduleCopy[indexCod[0]-1]; 
+          moduleCopy[indexCod[0]-1] = auxMod;
+          // cambio en el texto 
+          textCopy[indexCod[0]-1] = textCopy[indexCod[0]];
+          textCopy[indexCod[0]] = auxText; 
+          
+          setModuleType(moduleCopy)
+          setRepeticion(textCopy)
+        }
+
+      }
+      
+  
     }
     
     useEffect(()=>{
@@ -182,10 +263,30 @@ function Repetir({setArreglo, arreglo, index, handleDelete}) {
     }
     return (
         <div>
-            <Button onClick={() => handleDelete(index)} variante="outlined" className="btnEliminar">X</Button>
+          <ArrowButtons>
+            <Button 
+              onClick = {() => moveDown(index)}
+              variant="outlined"
+              className="btn-arrow">
+              <ArrowDropDown/>
+            </Button> 
+            <Button 
+              onClick = {()=> moveUp(index)}
+              variant="outlined"
+              className="btn-arrow">
+                <ArrowDropUp/>
+            </Button> 
+            <Button 
+              onClick = {() => handleDelete(index) }
+              variant="outlined"
+              className="btnEliminar">
+                X
+            </Button> 
+
+          </ArrowButtons>
             <div class="row">
                 <FormGroup className={classes.boxInput}>
-                    <Typography variante="h3">Variable de repetición</Typography>
+                    <Typography variant="h6">Variable de repetición</Typography>
                     <TextField 
                         id="name"
                         type="text"
@@ -210,6 +311,8 @@ function Repetir({setArreglo, arreglo, index, handleDelete}) {
                                     handleDelete={handleDeleteModule}
                                     moduleParent={moduleType}
                                     setModuleParent={setModuleType}
+                                    moveUp={upPosition}
+                                    moveDown={downPosition}
                                 />
                         }
                         if(type === 'titulo'){
@@ -218,6 +321,8 @@ function Repetir({setArreglo, arreglo, index, handleDelete}) {
                                     arreglo={repeticion}
                                     index={[indexC+1]}
                                     handleDelete={handleDeleteModule}
+                                    moveUp={upPosition}
+                                    moveDown={downPosition}
                                 />
                         }
                         if(type === 'texto'){
@@ -226,6 +331,8 @@ function Repetir({setArreglo, arreglo, index, handleDelete}) {
                                     arreglo={repeticion}
                                     index={[indexC+1]}
                                     handleDelete={handleDeleteModule}
+                                    moveUp={upPosition}
+                                    moveDown={downPosition}
                                 />
                         }
                         if(type === 'socio'){
@@ -235,6 +342,8 @@ function Repetir({setArreglo, arreglo, index, handleDelete}) {
                                     index={[indexC+1]}
                                     modulo="socio"
                                     handleDelete={handleDeleteModule}
+                                    moveUp={upPosition}
+                                    moveDown={downPosition}
                                 />
                         }
                         if(type === 'firma'){
@@ -244,6 +353,8 @@ function Repetir({setArreglo, arreglo, index, handleDelete}) {
                                     index={[indexC+1]}
                                     modulo="socio"
                                     handleDelete={handleDeleteModule}
+                                    moveUp={upPosition}
+                                    moveDown={downPosition}
                                 />
                         }
                         return null;
@@ -273,3 +384,11 @@ function Repetir({setArreglo, arreglo, index, handleDelete}) {
 }
 
 export default Repetir;
+
+
+const ArrowButtons = styled.div`
+  display:flex;
+  margin-top:18px;
+  justify-content:flex-end;
+  background-color: #e3e3e3;
+`

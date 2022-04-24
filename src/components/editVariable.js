@@ -16,7 +16,7 @@ import AddIcon from '@material-ui/icons/Add';
 import axios from 'axios';
 import {useParams} from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import {URLSERVER} from '../App';
+import {URLSERVER} from '../config';
 
 import { makeStyles } from '@material-ui/core/styles';
 

@@ -1,4 +1,5 @@
-import React, {useState, useEffect, useContext} from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useState, useEffect} from 'react'
 import {
     Select,
     FormControl,
@@ -9,8 +10,6 @@ import {
     FormGroup,
     makeStyles 
 } from '@material-ui/core';
-import DocumentContext from '../context/DocumentContext';
-import {DOCUMENT_ACTIONS} from '../context/DocumentProvider';
 import axios from 'axios';
 
 import Texto from './conditionals/texto'
@@ -20,7 +19,7 @@ import Firma from './conditionals/firma'
 import Repetir from './conditionals/repetir';
 import { useSnackbar } from 'notistack';
 
-import {URLSERVER} from '../App';
+import {URLSERVER} from '../config';
 
 const useStyles = makeStyles((theme) => ({
     textInput: {
@@ -48,7 +47,6 @@ const useStyles = makeStyles((theme) => ({
 
 function CreateDocument() {
     const classes = useStyles();
-    const [, dispatch] = useContext(DocumentContext)
     const { enqueueSnackbar } = useSnackbar();
     const [titulo, setTitulo] = useState('');
     const [textoDocumento, setTextoDocumento] = useState([]);
@@ -224,6 +222,7 @@ function CreateDocument() {
                                         handleDelete={handleDeleteModule}
                                     />
                             }
+                            return null;
                         })
                     )}
                 </div>

@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {TextField, Typography, FormGroup, makeStyles, Button } from '@material-ui/core';
+import {ArrowDropUp, ArrowDropDown} from '@material-ui/icons';
+import styled from 'styled-components'
 
 const useStyles = makeStyles((theme) => ({
     textInput: {
@@ -17,7 +19,14 @@ const useStyles = makeStyles((theme) => ({
       }
     },
 }));
-function Texto({setArreglo, arreglo,index, handleDelete}) {
+function Texto({
+  setArreglo,
+  arreglo,
+  index,
+  handleDelete,
+  moveUp,
+  moveDown
+}) {
     const classes = useStyles();
     const [titulo, setTitulo] = useState('');
     useEffect(() => {
@@ -57,21 +66,48 @@ function Texto({setArreglo, arreglo,index, handleDelete}) {
     }
     return (
         <div>
+          <ArrowButtons>
+            <Button 
+              onClick = {() => moveDown(index)}
+              variant = "outlined"
+              className = "btn-arrow">
+              <ArrowDropDown/>
+            </Button> 
+            <Button 
+              onClick = {()=> moveUp(index)}
+              variant = "outlined"
+              className = "btn-arrow">
+                <ArrowDropUp/>
+            </Button> 
+            <Button 
+              onClick = {() => handleDelete(index) }
+              variant = "outlined"
+              className = "btnEliminar">
+                X
+            </Button> 
+
+          </ArrowButtons>
             <FormGroup className={classes.boxInput}>
-                <Button onClick={() => handleDelete(index)} variante="outlined" className="btnEliminar">X</Button>
-                <Typography variante="h3">Titulo</Typography>
-                <TextField 
-                    name="titulo"
-                    type="text"
-                    placeholder="Titulo"
-                    variant="outlined"
-                    value={titulo}
-                    className={classes.textInput}
-                    onChange={handleTitulo}
-                />
+              <Typography variant="h6">Titulo</Typography>
+              <TextField 
+                name="titulo"
+                type="text"
+                placeholder="Titulo"
+                variant="outlined"
+                value={titulo}
+                className={classes.textInput}
+                onChange={handleTitulo}
+              />
             </FormGroup>
         </div>
     )
 }
 
 export default Texto
+
+const ArrowButtons = styled.div`
+  display:flex;
+  margin-top:18px;
+  justify-content:flex-end;
+  background-color: #e3e3e3;
+`

@@ -102,7 +102,9 @@ aside.sidebar h2{
 .btnEliminar {
   width: fit-content;
   z-index:22;
-  margin-left: auto!important;
   color: #896f6f!important;
-  margin-bottom: -38px!important;
+}
+
+.condicionales {
+  padding-left: 35px;
 }

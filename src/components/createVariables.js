@@ -15,7 +15,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
-import {URLSERVER} from '../App';
+import {URLSERVER} from '../config';
 
 import { makeStyles } from '@material-ui/core/styles';
 

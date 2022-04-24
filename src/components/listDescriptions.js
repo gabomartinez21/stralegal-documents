@@ -6,7 +6,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import styled from 'styled-components';
 import {useHistory} from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import {URLSERVER} from '../App';
+import {URLSERVER} from '../config';
 
 const StyledTableCell = styled.td`
     background:#e3e3e3;

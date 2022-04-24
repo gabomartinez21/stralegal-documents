@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {TextField, Typography, FormGroup, makeStyles, Button } from '@material-ui/core';
+import styled from 'styled-components';
+import {ArrowDropUp, ArrowDropDown} from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
     textInput: {
@@ -14,7 +16,15 @@ const useStyles = makeStyles((theme) => ({
         }
     },
 }));
-function Firma({setArreglo, arreglo, index, modulo, handleDelete}) {
+function Firma({
+  setArreglo,
+  arreglo,
+  index,
+  modulo,
+  handleDelete,
+  moveUp,
+  moveDown
+}) {
     const classes = useStyles();
     const [texto, setTexto] = useState();
 
@@ -54,9 +64,29 @@ function Firma({setArreglo, arreglo, index, modulo, handleDelete}) {
     
     return (
         <div>
+          <ArrowButtons>
+            <Button 
+              onClick = {() => moveDown(index)}
+              variante = "outlined"
+              className = "btn-arrow">
+              <ArrowDropDown/>
+            </Button> 
+            <Button 
+              onClick = {()=> moveUp(index)}
+              variante = "outlined"
+              className = "btn-arrow">
+                <ArrowDropUp/>
+            </Button> 
+            <Button 
+              onClick = {() => handleDelete(index) }
+              variante = "outlined"
+              className = "btnEliminar">
+                X
+            </Button> 
+
+          </ArrowButtons>
             <FormGroup className={classes.boxInput}>
-                <Button onClick={() => handleDelete(index)} variante="outlined" className="btnEliminar">X</Button>
-                <Typography variante="h3">Firma de:</Typography>
+                <Typography variant="h6">Firma de:</Typography>
                 <TextField 
                     id="textoBase"
                     variant="outlined"
@@ -71,3 +101,9 @@ function Firma({setArreglo, arreglo, index, modulo, handleDelete}) {
 }
 
 export default Firma
+const ArrowButtons = styled.div`
+  display:flex;
+  margin-top:18px;
+  justify-content:flex-end;
+  background-color: #e3e3e3;
+`
