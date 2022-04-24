@@ -158,6 +158,42 @@ function CreateDocument() {
         })
         
     }
+
+    const upPosition = (index) => {
+      const moduleCopy = [...moduleType];
+      const textCopy = [...textoDocumento];
+      if(index[0]-1 >= 0){
+        const auxMod = moduleCopy[index[0]-1];
+        const auxText = textCopy[index[0]-1];
+        //cambio en el modulo
+        moduleCopy[index[0]-1] = moduleCopy[index[0]] 
+        moduleCopy[index[0]] = auxMod;
+        // cambio en el texto 
+        textCopy[index[0]-1] = textCopy[index[0]] 
+        textCopy[index[0]] = auxText; 
+  
+        setModuleType(moduleCopy)
+        setTextoDocumento(textCopy)
+      }
+  
+    }
+    const downPosition = (index) => {
+      const moduleCopy = [...moduleType];
+      const textCopy = [...textoDocumento];
+      if(index[0]+1 <= moduleCopy.length && index[0]+1 <= textCopy.length){
+        const auxMod = moduleCopy[index[0]+1];
+        const auxText = textCopy[index[0]+1];
+        //cambio en el modulo
+        moduleCopy[index[0]+1] = moduleCopy[index[0]] 
+        moduleCopy[index[0]] = auxMod;
+        // cambio en el texto 
+        textCopy[index[0]+1] = textCopy[index[0]] 
+        textCopy[index[0]] = auxText; 
+  
+        setModuleType(moduleCopy)
+        setTextoDocumento(textCopy)
+      }
+    }
     
     return (
         <div>
@@ -188,6 +224,8 @@ function CreateDocument() {
                                         index={[index]}
                                         handleDelete={handleDeleteModule}
                                         handleDuplicate={handleDuplicate}
+                                        moveUp={upPosition}
+                                        moveDown={downPosition}
                                     />
                             }
                             if(type === 'titulo'){
@@ -196,6 +234,8 @@ function CreateDocument() {
                                         arreglo={textoDocumento}
                                         index={[index]}
                                         handleDelete={handleDeleteModule}
+                                        moveUp={upPosition}
+                                        moveDown={downPosition}
                                     />
                             }
                             if(type === 'texto'){
@@ -204,6 +244,8 @@ function CreateDocument() {
                                         arreglo={textoDocumento}
                                         index={[index]}
                                         handleDelete={handleDeleteModule}
+                                        moveUp={upPosition}
+                                        moveDown={downPosition}
                                     />
                             }
                             if(type === 'repetir'){
@@ -212,6 +254,8 @@ function CreateDocument() {
                                         arreglo={textoDocumento}
                                         index={[index]}
                                         handleDelete={handleDeleteModule}
+                                        moveUp={upPosition}
+                                        moveDown={downPosition}
                                     />
                             }
                             if(type === 'firma'){
@@ -220,6 +264,8 @@ function CreateDocument() {
                                         arreglo={textoDocumento}
                                         index={[index]}
                                         handleDelete={handleDeleteModule}
+                                        moveUp={upPosition}
+                                        moveDown={downPosition}
                                     />
                             }
                             return null;
