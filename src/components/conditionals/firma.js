@@ -45,7 +45,7 @@ function Firma({
             
 
         }
-    }, []);
+    }, [index]);
 
     const handleText = e=>{
         const valores = [...arreglo];

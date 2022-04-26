@@ -21,6 +21,7 @@ import Repetir from './conditionals/repetir';
 
 import { useSnackbar } from 'notistack';
 import { URLSERVER } from '../config';
+import ModuloExtra from './moduloExtra';
 
 const useStyles = makeStyles((theme) => ({
   textInput: {
@@ -156,6 +157,13 @@ function EditDocument() {
       }])
 
     }
+    if (e.target.value === 'repetir') {
+      setTextoDocumento([...textoDocumento, {
+        repetir: [{
+          variables: ''
+        }],
+      }])
+    }
     if (e.target.value === 'texto') {
       setTextoDocumento([...textoDocumento, {
         texto: '',
@@ -204,9 +212,13 @@ function EditDocument() {
   const upPosition = (index) => {
     const moduleCopy = [...moduleType];
     const textCopy = [...textoDocumento];
+    console.log(textCopy);
+    console.log(index);
     if(index[0]-1 >= 0){
       const auxMod = moduleCopy[index[0]-1];
       const auxText = textCopy[index[0]-1];
+      console.log(auxMod)
+      console.log(textCopy[index[0]] )
       //cambio en el modulo
       moduleCopy[index[0]-1] = moduleCopy[index[0]] 
       moduleCopy[index[0]] = auxMod;
@@ -243,55 +255,111 @@ function EditDocument() {
           React.Children.toArray(
             moduleType.map((type, index) => {
               if (type === 'condicional') {
-                return <Condicional
-                  setArreglo = { setTextoDocumento }
-                  arreglo = { textoDocumento }
-                  index = {[index]}
-                  handleDelete = { handleDeleteModule }
-                  handleDuplicate = { handleDuplicate }
-                  moveUp={upPosition}
-                  moveDown={downPosition}
-                />
+                return (
+                  <>
+                    <Condicional
+                      setArreglo = { setTextoDocumento }
+                      arreglo = { textoDocumento }
+                      index = {[index]}
+                      handleDelete = { handleDeleteModule }
+                      handleDuplicate = { handleDuplicate }
+                      moveUp={upPosition}
+                      moveDown={downPosition}
+                    />
+                    <ModuloExtra
+                      pos={index} 
+                      setArray={setTextoDocumento}
+                      array={textoDocumento}
+                      setModule={setModuleType}
+                      module={moduleType}
+                    />
+                  </>
+                )
               }
               if (type === 'titulo') {
-                return <Titulo
-                  setArreglo = { setTextoDocumento }
-                  arreglo = { textoDocumento }
-                  index = {[index] }
-                  handleDelete = { handleDeleteModule }
-                  moveUp={upPosition}
-                  moveDown={downPosition}
-                />
+                return (
+                  <>
+                    <Titulo
+                      setArreglo = { setTextoDocumento }
+                      arreglo = { textoDocumento }
+                      index = {[index] }
+                      handleDelete = { handleDeleteModule }
+                      moveUp={upPosition}
+                      moveDown={downPosition}
+                    />
+                    <ModuloExtra
+                      pos={index} 
+                          setArray={setTextoDocumento}
+                          array={textoDocumento}
+                          setModule={setModuleType}
+                          module={moduleType}
+                        />
+                  
+                  </>
+                )
               }
               if (type === 'texto') {
-                return <Texto
-                  setArreglo = { setTextoDocumento }
-                  arreglo = { textoDocumento }
-                  index = {[index] }
-                  handleDelete = { handleDeleteModule }
-                  moveUp={upPosition}
-                  moveDown={downPosition}
-                />
+                return (
+                  <>
+                    <Texto
+                      setArreglo = { setTextoDocumento }
+                      arreglo = { textoDocumento }
+                      index = {[index] }
+                      handleDelete = { handleDeleteModule }
+                      moveUp={upPosition}
+                      moveDown={downPosition}
+                    />
+                    <ModuloExtra
+                      pos={index} 
+                          setArray={setTextoDocumento}
+                          array={textoDocumento}
+                          setModule={setModuleType}
+                          module={moduleType}
+                        />
+                  </>
+                )
               }
               if (type === 'repetir') {
-                return <Repetir
-                  setArreglo = { setTextoDocumento }
-                  arreglo = { textoDocumento }
-                  index = {[index] }
-                  handleDelete = { handleDeleteModule }
-                  moveUp={upPosition}
-                  moveDown={downPosition}
-                />
+                return (
+                  <>
+                    <Repetir
+                      setArreglo = { setTextoDocumento }
+                      arreglo = { textoDocumento }
+                      index = {[index] }
+                      handleDelete = { handleDeleteModule }
+                      moveUp={upPosition}
+                      moveDown={downPosition}
+                    />
+                    <ModuloExtra
+                      pos={index} 
+                      setArray={setTextoDocumento}
+                      array={textoDocumento}
+                      setModule={setModuleType}
+                      module={moduleType}
+                    />
+                  </>
+                    )
               }
               if (type === 'firma') {
-                return <Firma
-                  setArreglo = { setTextoDocumento }
-                  arreglo = { textoDocumento }
-                  index = {[index] }
-                  handleDelete = { handleDeleteModule }
-                  moveUp={upPosition}
-                  moveDown={downPosition}
-                />
+                return (
+                  <>
+                    <Firma
+                      setArreglo = { setTextoDocumento }
+                      arreglo = { textoDocumento }
+                      index = {[index] }
+                      handleDelete = { handleDeleteModule }
+                      moveUp={upPosition}
+                      moveDown={downPosition}
+                    />
+                    <ModuloExtra
+                      pos={index} 
+                      setArray={setTextoDocumento}
+                      array={textoDocumento}
+                      setModule={setModuleType}
+                      module={moduleType}
+                    />
+                  </>
+                )
               }
             })
           )

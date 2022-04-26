@@ -74,9 +74,9 @@ function Repetir({
       const moduleCopy = [...moduleType];
       const textCopy = [...repeticion];
 
-      if(indexCod.length > 1){
-        const auxMod = moduleCopy[indexCod[0]][indexCod[1]+1];
-        const auxText = textCopy[indexCod[0]][indexCod[1]+2];
+      // if(indexCod.length > 1){
+      //   const auxMod = moduleCopy[indexCod[0]][indexCod[1]+1];
+      //   const auxText = textCopy[indexCod[0]][indexCod[1]+2];
         //cambio en el modulo
         // moduleCopy[indexCod[0]][indexCod[1]+1] = moduleCopy[indexCod[0]][indexCod[1]] 
         // moduleCopy[indexCod[0]][indexCod[1]] = auxMod;
@@ -86,7 +86,7 @@ function Repetir({
         // setModuleType(moduleCopy)
         // setRepeticion(textCopy)
 
-      }else{
+      // }else{
         if(indexCod[0]+1 <= moduleCopy.length && indexCod[0]+1 <= textCopy.length){
           const auxMod = moduleCopy[indexCod[0]];
           const auxText = textCopy[indexCod[0]+1];
@@ -101,17 +101,16 @@ function Repetir({
           setRepeticion(textCopy)
         }
 
-      }
+      // }
     }
     const upPosition = (indexCod) => {
       const moduleCopy = [...moduleType];
       const textCopy = [...repeticion];
-      console.log(indexCod);
-      console.log(moduleCopy);
+      
       if(indexCod.length > 1){
         if(indexCod[0]-1 >= 0){
-          const auxMod = moduleCopy[indexCod[0]][indexCod[1]-1];
-          const auxText = textCopy[indexCod[0]][indexCod[1]+1];
+          // const auxMod = moduleCopy[indexCod[0]][indexCod[1]-1];
+          // const auxText = textCopy[indexCod[0]][indexCod[1]+1];
           // cambio en el modulo
           // moduleCopy[indexCod[0]][indexCod[1]-1] = moduleCopy[indexCod[0]][indexCod[1]]; 
           // moduleCopy[indexCod[0]][indexCod[1]] = auxMod;
@@ -119,13 +118,15 @@ function Repetir({
           // textCopy[indexCod[0]][indexCod[1]+1] = textCopy[indexCod[0]][indexCod[1]];
           // textCopy[indexCod[0]][indexCod[1]] = auxText; 
           
-          setModuleType(moduleCopy)
-          setRepeticion(textCopy)
+          // setModuleType(moduleCopy)
+          // setRepeticion(textCopy)
         }
       }else{
         if(indexCod[0]-1 > 0){
           const auxMod = moduleCopy[indexCod[0]-2];
           const auxText = textCopy[indexCod[0]-1];
+          console.log(auxMod)
+          console.log(auxText)
           // cambio en el modulo
           moduleCopy[indexCod[0]-2] = moduleCopy[indexCod[0]-1]; 
           moduleCopy[indexCod[0]-1] = auxMod;
@@ -284,7 +285,7 @@ function Repetir({
             </Button> 
 
           </ArrowButtons>
-            <div class="row">
+            <div className="row">
                 <FormGroup className={classes.boxInput}>
                     <Typography variant="h6">Variable de repetición</Typography>
                     <TextField 

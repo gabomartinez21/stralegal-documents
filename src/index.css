@@ -108,3 +108,10 @@ aside.sidebar h2{
 .condicionales {
   padding-left: 35px;
 }
+
+.extra-modulo {
+  background-color: #fefefe;
+  margin: 20px auto;
+  display: flex;
+  justify-content:center;
+}
