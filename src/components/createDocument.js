@@ -20,6 +20,7 @@ import Repetir from './conditionals/repetir';
 import { useSnackbar } from 'notistack';
 
 import {URLSERVER} from '../config';
+import ModuloExtra from './moduloExtra';
 
 const useStyles = makeStyles((theme) => ({
     textInput: {
@@ -217,57 +218,113 @@ function CreateDocument() {
                 <div className="condicionales">
                     {React.Children.toArray(
                         moduleType.map((type, index) => {
-                            if(type === 'condicional'){
-                                return  <Condicional 
-                                        setArreglo={setTextoDocumento} 
-                                        arreglo={textoDocumento}
-                                        index={[index]}
-                                        handleDelete={handleDeleteModule}
-                                        handleDuplicate={handleDuplicate}
-                                        moveUp={upPosition}
-                                        moveDown={downPosition}
+                          if (type === 'condicional') {
+                            return (
+                              <>
+                                <Condicional
+                                  setArreglo = { setTextoDocumento }
+                                  arreglo = { textoDocumento }
+                                  index = {[index]}
+                                  handleDelete = { handleDeleteModule }
+                                  handleDuplicate = { handleDuplicate }
+                                  moveUp={upPosition}
+                                  moveDown={downPosition}
+                                />
+                                <ModuloExtra
+                                  pos={index} 
+                                  setArray={setTextoDocumento}
+                                  array={textoDocumento}
+                                  setModule={setModuleType}
+                                  module={moduleType}
+                                />
+                              </>
+                            )
+                          }
+                          if (type === 'titulo') {
+                            return (
+                              <>
+                                <Titulo
+                                  setArreglo = { setTextoDocumento }
+                                  arreglo = { textoDocumento }
+                                  index = {[index] }
+                                  handleDelete = { handleDeleteModule }
+                                  moveUp={upPosition}
+                                  moveDown={downPosition}
+                                />
+                                <ModuloExtra
+                                  pos={index} 
+                                      setArray={setTextoDocumento}
+                                      array={textoDocumento}
+                                      setModule={setModuleType}
+                                      module={moduleType}
                                     />
-                            }
-                            if(type === 'titulo'){
-                                return <Titulo
-                                        setArreglo={setTextoDocumento} 
-                                        arreglo={textoDocumento}
-                                        index={[index]}
-                                        handleDelete={handleDeleteModule}
-                                        moveUp={upPosition}
-                                        moveDown={downPosition}
+                              
+                              </>
+                            )
+                          }
+                          if (type === 'texto') {
+                            return (
+                              <>
+                                <Texto
+                                  setArreglo = { setTextoDocumento }
+                                  arreglo = { textoDocumento }
+                                  index = {[index] }
+                                  handleDelete = { handleDeleteModule }
+                                  moveUp={upPosition}
+                                  moveDown={downPosition}
+                                />
+                                <ModuloExtra
+                                  pos={index} 
+                                      setArray={setTextoDocumento}
+                                      array={textoDocumento}
+                                      setModule={setModuleType}
+                                      module={moduleType}
                                     />
-                            }
-                            if(type === 'texto'){
-                                return <Texto
-                                        setArreglo={setTextoDocumento} 
-                                        arreglo={textoDocumento}
-                                        index={[index]}
-                                        handleDelete={handleDeleteModule}
-                                        moveUp={upPosition}
-                                        moveDown={downPosition}
-                                    />
-                            }
-                            if(type === 'repetir'){
-                                return <Repetir
-                                        setArreglo={setTextoDocumento} 
-                                        arreglo={textoDocumento}
-                                        index={[index]}
-                                        handleDelete={handleDeleteModule}
-                                        moveUp={upPosition}
-                                        moveDown={downPosition}
-                                    />
-                            }
-                            if(type === 'firma'){
-                                return <Firma
-                                        setArreglo={setTextoDocumento} 
-                                        arreglo={textoDocumento}
-                                        index={[index]}
-                                        handleDelete={handleDeleteModule}
-                                        moveUp={upPosition}
-                                        moveDown={downPosition}
-                                    />
-                            }
+                              </>
+                            )
+                          }
+                          if (type === 'repetir') {
+                            return (
+                              <>
+                                <Repetir
+                                  setArreglo = { setTextoDocumento }
+                                  arreglo = { textoDocumento }
+                                  index = {[index] }
+                                  handleDelete = { handleDeleteModule }
+                                  moveUp={upPosition}
+                                  moveDown={downPosition}
+                                />
+                                <ModuloExtra
+                                  pos={index} 
+                                  setArray={setTextoDocumento}
+                                  array={textoDocumento}
+                                  setModule={setModuleType}
+                                  module={moduleType}
+                                />
+                              </>
+                                )
+                          }
+                          if (type === 'firma') {
+                            return (
+                              <>
+                                <Firma
+                                  setArreglo = { setTextoDocumento }
+                                  arreglo = { textoDocumento }
+                                  index = {[index] }
+                                  handleDelete = { handleDeleteModule }
+                                  moveUp={upPosition}
+                                  moveDown={downPosition}
+                                />
+                                <ModuloExtra
+                                  pos={index} 
+                                  setArray={setTextoDocumento}
+                                  array={textoDocumento}
+                                  setModule={setModuleType}
+                                  module={moduleType}
+                                />
+                              </>
+                            )
+                          }
                             return null;
                         })
                     )}

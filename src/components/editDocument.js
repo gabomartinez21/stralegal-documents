@@ -361,6 +361,7 @@ function EditDocument() {
                   </>
                 )
               }
+              return null;
             })
           )
         } 
